@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'loginScreen.dart';
+import 'signUpScreen.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -70,7 +72,14 @@ class OnboardingScreen extends StatelessWidget {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginScreen(),
+                              ),
+                            );
+                          },
                           child: const Text('Login'),
                         ),
                       ),
@@ -85,7 +94,14 @@ class OnboardingScreen extends StatelessWidget {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SignupScreen(),
+                              ),
+                            );
+                          },
                           child: const Text('Sign up'),
                         ),
                       ),
