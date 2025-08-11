@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'signUpScreen.dart';
+import 'forgetPassword.dart';
+import 'otpVerification.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -79,6 +81,12 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const OtpLoginScreen(),
+                        ),
+                      );
                       // OTP logic
                     },
                     child: const Text(
@@ -88,6 +96,12 @@ class LoginScreen extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ForgetPasswordScreen(),
+                        ),
+                      );
                       // Forgot password logic
                     },
                     child: const Text(
@@ -124,7 +138,11 @@ class LoginScreen extends StatelessWidget {
                 child: RichText(
                   text: TextSpan(
                     text: "Don’t have an account? ",
-                    style: const TextStyle(color: Colors.black),
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      color: Colors.black,
+                    ),
+
                     children: [
                       TextSpan(
                         text: "Sign up",
