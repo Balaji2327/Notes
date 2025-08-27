@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'signUpScreen.dart';
 import 'forgetPassword.dart';
 import 'otpVerification.dart';
+import 'homeScreen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -63,6 +64,12 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                      );
                     // Add login logic here
                   },
                   child: const Text(
