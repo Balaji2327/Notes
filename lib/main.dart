@@ -13,7 +13,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(fontFamily: 'Poppins'
+      theme: ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Poppins'
       ),
       home: const OnboardingScreen(),
     );

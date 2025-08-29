@@ -5,34 +5,41 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size; // Screen size
+    final height = size.height;
+    final width = size.width;
+
     return Scaffold(
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: Colors.black,
-        child: const Icon(Icons.add, color: Colors.white, size: 32),
+        child: Icon(Icons.add, color: Colors.white, size: width * 0.08),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
-        notchMargin: 8,
+        notchMargin: width * 0.02,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+          padding: EdgeInsets.symmetric(
+            horizontal: width * 0.04,
+            vertical: height * 0.01,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Icon(Icons.home, color: Colors.blue, size: 28),
-              Icon(Icons.bar_chart, color: Colors.green, size: 28),
-              SizedBox(width: 48), // gap for FAB
-              Icon(Icons.calendar_month, color: Colors.red, size: 28),
-              Icon(Icons.more_vert, color: Colors.black, size: 28),
+            children: [
+              Icon(Icons.home, color: Colors.blue, size: width * 0.07),
+              Icon(Icons.bar_chart, color: Colors.green, size: width * 0.07),
+              SizedBox(width: width * 0.12), // gap for FAB
+              Icon(Icons.calendar_month, color: Colors.red, size: width * 0.07),
+              Icon(Icons.more_vert, color: Colors.black, size: width * 0.07),
             ],
           ),
         ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(width * 0.04),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -40,66 +47,94 @@ class HomeScreen extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF00838F), Color(0xFF4DD0E1)],
+                    colors: [
+                      Color.fromARGB(255, 74, 186, 121),
+                      Color.fromARGB(255, 1, 94, 104),
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(width * 0.04),
                 ),
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(width * 0.04),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       "Hello, Siddharth P",
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                        fontSize: width * 0.05,
+                        fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    const Text(
+                    SizedBox(height: height * 0.005),
+                    Text(
                       "siddu2017@gmail.com",
-                      style: TextStyle(color: Colors.white70),
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: width * 0.035,
+                      ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: height * 0.015),
                     TextField(
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
                         hintText: "search",
                         prefixIcon: const Icon(Icons.search),
-                        contentPadding: const EdgeInsets.all(0),
+                        contentPadding: EdgeInsets.zero,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(width * 0.03),
                           borderSide: BorderSide.none,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: height * 0.03),
 
               // My Folders
-              const Text("My Folders",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 12),
+              Text(
+                "My Folders",
+                style: TextStyle(
+                  fontSize: width * 0.045,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: height * 0.015),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  _FolderItem(icon: Icons.folder, label: "Home work"),
-                  _FolderItem(icon: Icons.folder, label: "Workout"),
-                  _FolderItem(icon: Icons.folder, label: "Sports"),
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _FolderItem(
+                    icon: Icons.folder,
+                    label: "Home work",
+                    size: width * 0.12,
+                  ),
+                  _FolderItem(
+                    icon: Icons.folder,
+                    label: "Workout",
+                    size: width * 0.12,
+                  ),
+                  _FolderItem(
+                    icon: Icons.folder,
+                    label: "Sports",
+                    size: width * 0.12,
+                  ),
                 ],
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: height * 0.03),
 
               // Recent Notes
-              const Text("Recent Notes",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 12),
+              Text(
+                "Recent Notes",
+                style: TextStyle(
+                  fontSize: width * 0.045,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: height * 0.015),
 
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,27 +142,38 @@ class HomeScreen extends StatelessWidget {
                   // Voice Note Card
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.only(right: 8),
+                      padding: EdgeInsets.all(width * 0.03),
+                      margin: EdgeInsets.only(right: width * 0.02),
                       decoration: BoxDecoration(
                         color: const Color(0xFFD4F5D4),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(width * 0.03),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text("Voice note",
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 8),
+                          Text(
+                            "Voice note",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: width * 0.04,
+                            ),
+                          ),
+                          SizedBox(height: height * 0.01),
                           Row(
-                            children: const [
-                              Icon(Icons.play_arrow,
-                                  size: 32, color: Colors.black),
-                              SizedBox(width: 8),
+                            children: [
+                              Icon(
+                                Icons.play_arrow,
+                                size: width * 0.08,
+                                color: Colors.black,
+                              ),
+                              SizedBox(width: width * 0.02),
                               Expanded(
-                                child: Icon(Icons.multitrack_audio,
-                                    size: 48, color: Colors.black),
-                              )
+                                child: Icon(
+                                  Icons.multitrack_audio,
+                                  size: width * 0.15,
+                                  color: Colors.black,
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -138,17 +184,17 @@ class HomeScreen extends StatelessWidget {
                   // List of plans Card
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.only(left: 8),
+                      padding: EdgeInsets.all(width * 0.03),
+                      margin: EdgeInsets.only(left: width * 0.02),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(width * 0.03),
                       ),
-                      child: const Text(
+                      child: Text(
                         "List of plans for this week\n"
                         "Going to bangalore in this weekend and also explore the famous Temple at karnataka. "
                         "On this week end there is a CSK vs RCB match at chinnaswamy stadium...",
-                        style: TextStyle(fontSize: 12),
+                        style: TextStyle(fontSize: width * 0.03),
                         maxLines: 10,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -156,28 +202,33 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: height * 0.02),
 
               // Grocery List
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(width * 0.03),
                 decoration: BoxDecoration(
                   color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(width * 0.03),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text("Grocery Lists",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    SizedBox(height: 8),
-                    _BulletText(text: "Apple 1kg"),
-                    _BulletText(text: "Vegetables"),
-                    _BulletText(text: "Snacks"),
-                    _BulletText(text: "Milk"),
+                  children: [
+                    Text(
+                      "Grocery Lists",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: width * 0.04,
+                      ),
+                    ),
+                    SizedBox(height: height * 0.01),
+                    const _BulletText(text: "Apple 1kg"),
+                    const _BulletText(text: "Vegetables"),
+                    const _BulletText(text: "Snacks"),
+                    const _BulletText(text: "Milk"),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -189,15 +240,16 @@ class HomeScreen extends StatelessWidget {
 class _FolderItem extends StatelessWidget {
   final IconData icon;
   final String label;
-  const _FolderItem({required this.icon, required this.label});
+  final double size;
+  const _FolderItem({required this.icon, required this.label, this.size = 48});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Icon(icon, size: 48, color: Colors.black),
-        const SizedBox(height: 6),
-        Text(label),
+        Icon(icon, size: size, color: const Color.fromARGB(255, 0, 0, 0)),
+        SizedBox(height: size * 0.12),
+        Text(label, style: TextStyle(fontSize: size * 0.3)),
       ],
     );
   }
@@ -209,11 +261,12 @@ class _BulletText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Row(
       children: [
-        const Icon(Icons.circle, size: 8, color: Colors.black),
-        const SizedBox(width: 8),
-        Text(text),
+        Icon(Icons.circle, size: width * 0.02, color: Colors.black),
+        SizedBox(width: width * 0.02),
+        Text(text, style: TextStyle(fontSize: width * 0.035)),
       ],
     );
   }
