@@ -10,16 +10,16 @@ dependencies:
   flutter:
     sdk: flutter
   table_calendar: ^3.0.9
-    
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
-  
+  flutter_launcher_icons: ^0.14.1   # ✅ added for app icon
 
 flutter:
   uses-material-design: true
+
   fonts:
     - family: Poppins
       fonts:
@@ -55,6 +55,11 @@ flutter:
     - assets/images/play.png
     - assets/images/folder.png
     - assets/images/calender.png
-    
 
-
+# ✅ Config for flutter_launcher_icons
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.png"   # <-- replace with your app icon image
+  adaptive_icon_background: "#FFFFFF"   # solid background (can be your brand color)
+  adaptive_icon_foreground: "assets/images/app_icon.png"  # same icon, fills bigger space
