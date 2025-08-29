@@ -50,7 +50,10 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.tealAccent, Colors.green],
+              colors: [
+                Color.fromARGB(255, 74, 186, 121),
+                Color.fromARGB(255, 1, 94, 104),
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'OnboardingScreen.dart';
+import 'onboardingScreen.dart';
 import 'loginScreen.dart';
 
 void main() {
