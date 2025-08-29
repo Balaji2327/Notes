@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'remainderScreen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size; // Screen size
+    final size = MediaQuery.of(context).size;
     final height = size.height;
     final width = size.width;
 
@@ -31,12 +37,29 @@ class HomeScreen extends StatelessWidget {
               Icon(Icons.home, color: Colors.blue, size: width * 0.07),
               Icon(Icons.bar_chart, color: Colors.green, size: width * 0.07),
               SizedBox(width: width * 0.12), // gap for FAB
-              Icon(Icons.calendar_month, color: Colors.red, size: width * 0.07),
+              // 👇 Calendar icon → navigate to AddReminderScreen
+              IconButton(
+                icon: Icon(
+                  Icons.calendar_month,
+                  color: Colors.red,
+                  size: width * 0.07,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddReminderScreen(),
+                    ),
+                  );
+                },
+              ),
+
               Icon(Icons.more_vert, color: Colors.black, size: width * 0.07),
             ],
           ),
         ),
       ),
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(width * 0.04),
