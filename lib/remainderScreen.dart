@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'homeScreen.dart';
+import 'moreScreen.dart';
 
 class AddReminderScreen extends StatefulWidget {
   const AddReminderScreen({super.key});
@@ -218,35 +219,70 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Home
-              IconButton(
-                icon: Icon(Icons.home, color: Colors.blue, size: width * 0.07),
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
-                  );
-                },
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.home,
+                      size: width * 0.07,
+                      color: Colors.blue,
+                    ),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(width: width * 0.05),
+                  IconButton(
+                    icon: Icon(
+                      Icons.bar_chart,
+                      size: width * 0.07,
+                      color: Colors.green,
+                    ),
+                    onPressed: () {},
+                  ),
+                ],
               ),
-
-              // Stats
-              Icon(Icons.bar_chart, color: Colors.green, size: width * 0.07),
-
-              SizedBox(width: width * 0.12), // gap for FAB
-              // Calendar (stays on same screen)
-              IconButton(
-                icon: Icon(
-                  Icons.calendar_month,
-                  color: Colors.red,
-                  size: width * 0.07,
-                ),
-                onPressed: () {
-                  // Already in AddReminderScreen
-                },
+              SizedBox(width: width * 0.05),
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.calendar_month,
+                      size: width * 0.07,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddReminderScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(width: width * 0.05),
+                  IconButton(
+                    icon: Icon(
+                      Icons.more_vert,
+                      size: width * 0.07,
+                      color: Colors.black87,
+                    ),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MoreScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
-
-              // More
-              Icon(Icons.more_vert, color: Colors.black, size: width * 0.07),
             ],
           ),
         ),

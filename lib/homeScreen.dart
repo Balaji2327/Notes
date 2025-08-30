@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'remainderScreen.dart';
+import 'moreScreen.dart'; // 👈 Import MoreScreen
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,12 +18,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+
+      // Floating Add Button
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: Colors.black,
         child: Icon(Icons.add, color: Colors.white, size: width * 0.08),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+      // Bottom Navigation Bar
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: width * 0.02,
@@ -34,32 +39,76 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.home, color: Colors.blue, size: width * 0.07),
-              Icon(Icons.bar_chart, color: Colors.green, size: width * 0.07),
-              SizedBox(width: width * 0.12), // gap for FAB
-              // 👇 Calendar icon → navigate to AddReminderScreen
-              IconButton(
-                icon: Icon(
-                  Icons.calendar_month,
-                  color: Colors.red,
-                  size: width * 0.07,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AddReminderScreen(),
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.home,
+                      size: width * 0.07,
+                      color: Colors.blue,
                     ),
-                  );
-                },
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(width: width * 0.05),
+                  IconButton(
+                    icon: Icon(
+                      Icons.bar_chart,
+                      size: width * 0.07,
+                      color: Colors.green,
+                    ),
+                    onPressed: () {},
+                  ),
+                ],
               ),
-
-              Icon(Icons.more_vert, color: Colors.black, size: width * 0.07),
+              SizedBox(width: width * 0.05),
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.calendar_month,
+                      size: width * 0.07,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddReminderScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(width: width * 0.05),
+                  IconButton(
+                    icon: Icon(
+                      Icons.more_vert,
+                      size: width * 0.07,
+                      color: Colors.black87,
+                    ),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MoreScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ],
           ),
         ),
       ),
 
+      // Body
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(width * 0.04),
