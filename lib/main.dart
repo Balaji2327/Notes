@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'onboardingScreen.dart';
-import 'loginScreen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -13,10 +12,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Poppins'
-      ),
+      theme: ThemeData(useMaterial3: true, fontFamily: 'Poppins'),
       home: const OnboardingScreen(),
     );
   }
