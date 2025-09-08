@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'moreScreen.dart';
 import 'remainderScreen.dart';
 import 'folderScreen.dart';
+import 'statsScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -70,7 +71,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       size: width * 0.07,
                       color: Colors.green,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const StatsScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

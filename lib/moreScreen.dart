@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'homeScreen.dart';
 import 'remainderScreen.dart';
 import 'folderScreen.dart';
+import 'statsScreen.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -64,7 +65,14 @@ class MoreScreen extends StatelessWidget {
                       size: width * 0.07,
                       color: Colors.green,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const StatsScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

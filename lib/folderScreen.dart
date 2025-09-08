@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'homeScreen.dart';
 import 'remainderScreen.dart';
 import 'moreScreen.dart';
+import 'statsScreen.dart';
 
 class FolderScreen extends StatefulWidget {
   const FolderScreen({super.key});
@@ -173,7 +174,14 @@ class _FolderScreenState extends State<FolderScreen> {
                       size: width * 0.07,
                       color: Colors.green,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const StatsScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -302,7 +310,7 @@ class _FolderScreenState extends State<FolderScreen> {
                         "Add voice note",
                         style: TextStyle(
                           fontSize: 14,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 8),

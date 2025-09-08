@@ -3,6 +3,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'homeScreen.dart';
 import 'moreScreen.dart';
 import 'folderScreen.dart';
+import 'statsScreen.dart';
 
 class AddReminderScreen extends StatefulWidget {
   const AddReminderScreen({super.key});
@@ -248,7 +249,14 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                       size: width * 0.07,
                       color: Colors.green,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const StatsScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
