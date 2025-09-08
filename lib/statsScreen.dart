@@ -60,7 +60,7 @@ class _StatsScreenState extends State<StatsScreen> {
         elevation: 0,
         toolbarHeight: height * 0.08,
         title: Text(
-          "Usage Stats",
+          "Daily Stats",
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: width * 0.065,
