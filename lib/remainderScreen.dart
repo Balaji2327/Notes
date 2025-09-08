@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'homeScreen.dart';
 import 'moreScreen.dart';
+import 'folderScreen.dart';
 
 class AddReminderScreen extends StatefulWidget {
   const AddReminderScreen({super.key});
@@ -199,8 +200,12 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
       // ✅ Floating Action Button
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Save reminder then go back
-          Navigator.pop(context);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const FolderScreen(),
+            ),
+          );
         },
         backgroundColor: Colors.black,
         child: const Icon(Icons.add, color: Colors.white, size: 32),

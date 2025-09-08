@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'moreScreen.dart';
 import 'remainderScreen.dart';
-import 'moreScreen.dart'; // 👈 Import MoreScreen
+import 'folderScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,15 +20,21 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      // Floating Add Button
+      // ✅ Floating Add Button
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          // 👉 Go to FolderScreen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const FolderScreen()),
+          );
+        },
         backgroundColor: Colors.black,
         child: Icon(Icons.add, color: Colors.white, size: width * 0.08),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      // Bottom Navigation Bar
+      // ✅ Bottom Navigation Bar
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: width * 0.02,
@@ -108,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
 
-      // Body
+      // ✅ Body
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(width * 0.04),
@@ -153,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
-                        hintText: "search",
+                        hintText: "Search",
                         prefixIcon: const Icon(Icons.search),
                         contentPadding: EdgeInsets.zero,
                         border: OutlineInputBorder(
@@ -178,22 +185,10 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: height * 0.015),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _FolderItem(
-                    icon: Icons.folder,
-                    label: "Home work",
-                    size: width * 0.12,
-                  ),
-                  _FolderItem(
-                    icon: Icons.folder,
-                    label: "Workout",
-                    size: width * 0.12,
-                  ),
-                  _FolderItem(
-                    icon: Icons.folder,
-                    label: "Sports",
-                    size: width * 0.12,
-                  ),
+                children: const [
+                  _FolderItem(icon: Icons.folder, label: "Home work"),
+                  _FolderItem(icon: Icons.folder, label: "Workout"),
+                  _FolderItem(icon: Icons.folder, label: "Sports"),
                 ],
               ),
               SizedBox(height: height * 0.03),
@@ -285,19 +280,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: const [
                     Text(
                       "Grocery Lists",
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: width * 0.04,
+                        fontSize: 16,
                       ),
                     ),
-                    SizedBox(height: height * 0.01),
-                    const _BulletText(text: "Apple 1kg"),
-                    const _BulletText(text: "Vegetables"),
-                    const _BulletText(text: "Snacks"),
-                    const _BulletText(text: "Milk"),
+                    SizedBox(height: 8),
+                    _BulletText(text: "Apple 1kg"),
+                    _BulletText(text: "Vegetables"),
+                    _BulletText(text: "Snacks"),
+                    _BulletText(text: "Milk"),
                   ],
                 ),
               ),
@@ -312,16 +307,16 @@ class _HomeScreenState extends State<HomeScreen> {
 class _FolderItem extends StatelessWidget {
   final IconData icon;
   final String label;
-  final double size;
-  const _FolderItem({required this.icon, required this.label, this.size = 48});
+  const _FolderItem({required this.icon, required this.label});
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        Icon(icon, size: size, color: const Color.fromARGB(255, 0, 0, 0)),
-        SizedBox(height: size * 0.12),
-        Text(label, style: TextStyle(fontSize: size * 0.3)),
+        Icon(icon, size: width * 0.12, color: Colors.black),
+        SizedBox(height: width * 0.02),
+        Text(label, style: TextStyle(fontSize: width * 0.035)),
       ],
     );
   }

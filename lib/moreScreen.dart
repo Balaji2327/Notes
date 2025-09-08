@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'homeScreen.dart';
 import 'remainderScreen.dart';
+import 'folderScreen.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -16,7 +17,12 @@ class MoreScreen extends StatelessWidget {
 
       // Floating Add Button
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const FolderScreen()),
+          );
+        },
         backgroundColor: Colors.black,
         child: Icon(Icons.add, color: Colors.white, size: width * 0.08),
       ),
@@ -127,7 +133,7 @@ class MoreScreen extends StatelessWidget {
             child: Row(
               children: [
                 CircleAvatar(
-                  radius: width * 0.09,
+                  radius: width * 0.08,
                   backgroundColor: const Color.fromARGB(224, 233, 230, 230),
                   child: Icon(
                     Icons.person,
