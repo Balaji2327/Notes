@@ -192,10 +192,10 @@ class _StatsScreenState extends State<StatsScreen> {
                   showColorTip: true,
                   showText: false,
                   colorsets: const {
-                    1: Colors.green,
-                    2: Colors.greenAccent,
-                    3: Colors.lightGreen,
-                    4: Colors.teal,
+                    1: Color.fromARGB(255, 0, 255, 8),
+                    2: Color.fromARGB(255, 22, 110, 47),
+                    3: Color.fromARGB(255, 125, 227, 140),
+                    4: Color.fromARGB(255, 5, 86, 10),
                   },
                   size: width * 0.08, // smaller to fit
                   textColor: Colors.black,
