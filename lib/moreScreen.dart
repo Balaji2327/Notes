@@ -29,7 +29,7 @@ class MoreScreen extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      // BOTTOM NAV BAR (Icons)
+      // Bottom Navigation Bar
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: width * 0.02,
@@ -117,7 +117,7 @@ class MoreScreen extends StatelessWidget {
         ),
       ),
 
-      // BODY
+      // Body
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -203,16 +203,25 @@ class MoreScreen extends StatelessWidget {
           ),
           SizedBox(height: height * 0.015),
 
-          // Options List (ICONS)
+          // Options List
           Expanded(
             child: ListView(
               padding: EdgeInsets.symmetric(horizontal: width * 0.05),
               children: [
                 _buildOption(
                   context,
-                  icon: Icons.phone_in_talk,
-                  text: "Contact us",
+                  icon: Icons.person,
+                  text: "Profile",
                   color: Colors.grey.shade300,
+                  onTap: () {},
+                ),
+                SizedBox(height: height * 0.012),
+                _buildOption(
+                  context,
+                  icon: Icons.settings,
+                  text: "Settings",
+                  color: Colors.grey.shade300,
+                  onTap: () {},
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
@@ -220,6 +229,7 @@ class MoreScreen extends StatelessWidget {
                   icon: Icons.share,
                   text: "Share this app",
                   color: Colors.grey.shade300,
+                  onTap: () {},
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
@@ -227,6 +237,15 @@ class MoreScreen extends StatelessWidget {
                   icon: Icons.privacy_tip,
                   text: "Privacy policy",
                   color: Colors.grey.shade300,
+                  onTap: () {},
+                ),
+                SizedBox(height: height * 0.012),
+                _buildOption(
+                  context,
+                  icon: Icons.help,
+                  text: "Help & Support",
+                  color: Colors.grey.shade300,
+                  onTap: () {},
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
@@ -234,6 +253,9 @@ class MoreScreen extends StatelessWidget {
                   icon: Icons.logout,
                   text: "Log Out",
                   color: Colors.grey.shade300,
+                  onTap: () {
+                    _showLogoutDialog(context);
+                  },
                 ),
                 SizedBox(height: height * 0.012),
               ],
@@ -244,11 +266,13 @@ class MoreScreen extends StatelessWidget {
     );
   }
 
+  /// Reusable option widget
   Widget _buildOption(
     BuildContext context, {
     required IconData icon,
     required String text,
     required Color color,
+    VoidCallback? onTap,
   }) {
     final size = MediaQuery.of(context).size;
     final width = size.width;
@@ -279,8 +303,51 @@ class MoreScreen extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        onTap: () {},
+        onTap: onTap,
       ),
+    );
+  }
+
+  /// Logout confirmation popup
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: const Text("Confirm Logout"),
+          content: const Text("Are you sure you want to log out?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop(); // close popup
+              },
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(ctx).pop(); // close popup
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Logged out successfully")),
+                );
+
+                // Example: Navigate back to login page
+                // Navigator.pushReplacement(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const LoginScreen()),
+                // );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 135, 219, 101),
+              ),
+              child: const Text("Logout"),
+            ),
+          ],
+        );
+      },
     );
   }
 }

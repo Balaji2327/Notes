@@ -15,6 +15,9 @@ class _FolderScreenState extends State<FolderScreen> {
   // List of folders
   List<String> folders = ["Home work", "Workout", "Sports"];
 
+  // Example tasks ending today
+  List<String> tasksEndingToday = ["Submit assignment", "Evening workout"];
+
   // Add new folder (from dialog)
   void _createFolder() {
     TextEditingController controller = TextEditingController();
@@ -375,6 +378,58 @@ class _FolderScreenState extends State<FolderScreen> {
                     ],
                   ),
                 ),
+
+                const SizedBox(height: 35),
+
+                // ✅ "Task End Today" Alert Message
+                if (tasksEndingToday.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.red[50],
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.red.shade300, width: 1),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: const [
+                            Icon(Icons.warning, color: Colors.red, size: 28),
+                            SizedBox(width: 8),
+                            Text(
+                              "Tasks Ending Today!",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        ...tasksEndingToday.map(
+                          (task) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.task_alt,
+                                  size: 20,
+                                  color: Colors.black54,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  task,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),
