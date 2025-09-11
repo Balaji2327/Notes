@@ -3,10 +3,10 @@ import 'homeScreen.dart';
 import 'remainderScreen.dart';
 import 'folderScreen.dart';
 import 'statsScreen.dart';
-import 'settingsScreen.dart';
+import 'moreScreen.dart';
 
-class MoreScreen extends StatelessWidget {
-  const MoreScreen({super.key});
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +16,36 @@ class MoreScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
+
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        toolbarHeight: 60,
+        title: const Text(
+          "Settings",
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 26),
+        ),
+        actions: const [
+          Icon(Icons.more_vert, size: 28, color: Colors.black),
+          SizedBox(width: 12),
+        ],
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 74, 186, 121),
+                Color.fromARGB(255, 1, 94, 104),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+          ),
+        ),
+      ),
 
       // Floating Add Button
       floatingActionButton: FloatingActionButton(
@@ -122,89 +152,7 @@ class MoreScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Profile Header
-          Container(
-            padding: EdgeInsets.all(width * 0.04),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color.fromARGB(255, 74, 186, 121),
-                  Color.fromARGB(255, 1, 94, 104),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-            ),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: width * 0.08,
-                  backgroundColor: const Color.fromARGB(224, 233, 230, 230),
-                  child: Icon(
-                    Icons.person,
-                    size: width * 0.1,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(width: width * 0.03),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Siddharth P",
-                      style: TextStyle(
-                        fontSize: width * 0.06,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                    ),
-                    Text(
-                      "siddu2017@gmail.com",
-                      style: TextStyle(
-                        fontSize: width * 0.035,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ],
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: Colors.black,
-                    size: width * 0.07,
-                  ),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MoreScreen(),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-
           SizedBox(height: height * 0.02),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: width * 0.04),
-            child: Text(
-              "More",
-              style: TextStyle(
-                fontSize: width * 0.055,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          SizedBox(height: height * 0.015),
-
-          // Options List
           Expanded(
             child: ListView(
               padding: EdgeInsets.symmetric(horizontal: width * 0.05),
@@ -212,74 +160,100 @@ class MoreScreen extends StatelessWidget {
                 _buildOption(
                   context,
                   icon: Icons.person,
-                  text: "Profile",
-                  color: Colors.grey.shade300,
+                  text: "Edit Profile",
+                  color: Colors.blue.shade100,
                   onTap: () {},
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
                   context,
-                  icon: Icons.favorite,
-                  text: "Favorites",
-                  color: Colors.grey.shade300,
+                  icon: Icons.timer,
+                  text: "Time Management",
+                  color: Colors.orange.shade100,
                   onTap: () {},
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
                   context,
-                  icon: Icons.settings,
-                  text: "Settings",
-                  color: Colors.grey.shade300,
+                  icon: Icons.color_lens,
+                  text: "Theme",
+                  color: Colors.purple.shade100,
                   onTap: () {
-                    // Navigate to Settings Screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SettingsScreen(),
-                      ),
-                    );
+                    _showThemeDialog(context);
                   },
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
                   context,
-                  icon: Icons.share,
-                  text: "Share this app",
-                  color: Colors.grey.shade300,
+                  icon: Icons.language,
+                  text: "Language",
+                  color: Colors.green.shade100,
                   onTap: () {},
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
                   context,
-                  icon: Icons.privacy_tip,
-                  text: "Privacy policy",
-                  color: Colors.grey.shade300,
+                  icon: Icons.accessibility,
+                  text: "Accessibility",
+                  color: Colors.red.shade100,
                   onTap: () {},
                 ),
-                SizedBox(height: height * 0.012),
-                _buildOption(
-                  context,
-                  icon: Icons.help,
-                  text: "Help & Support",
-                  color: Colors.grey.shade300,
-                  onTap: () {},
-                ),
-                SizedBox(height: height * 0.012),
-                _buildOption(
-                  context,
-                  icon: Icons.logout,
-                  text: "Log Out",
-                  color: Colors.grey.shade300,
-                  onTap: () {
-                    _showLogoutDialog(context);
-                  },
-                ),
-                SizedBox(height: height * 0.012),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  void _showThemeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: const Text("Choose Theme"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.brightness_auto),
+                title: const Text("System Default"),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("System Default Theme Selected"),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.light_mode),
+                title: const Text("Light"),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Light Theme Selected")),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.dark_mode),
+                title: const Text("Dark"),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Dark Theme Selected")),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -323,49 +297,6 @@ class MoreScreen extends StatelessWidget {
         ),
         onTap: onTap,
       ),
-    );
-  }
-
-  /// Logout confirmation popup
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext ctx) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          title: const Text("Confirm Logout"),
-          content: const Text("Are you sure you want to log out?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(ctx).pop(); // close popup
-              },
-              child: const Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(ctx).pop(); // close popup
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Logged out successfully")),
-                );
-
-                // Example: Navigate back to login page
-                // Navigator.pushReplacement(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => const LoginScreen()),
-                // );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 135, 219, 101),
-              ),
-              child: const Text("Logout"),
-            ),
-          ],
-        );
-      },
     );
   }
 }
