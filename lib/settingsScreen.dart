@@ -4,9 +4,18 @@ import 'remainderScreen.dart';
 import 'folderScreen.dart';
 import 'statsScreen.dart';
 import 'moreScreen.dart';
+import 'theme.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  // Profile picture (default)
+  String? profileImage;
 
   @override
   Widget build(BuildContext context) {
@@ -15,19 +24,26 @@ class SettingsScreen extends StatelessWidget {
     final width = size.width;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         toolbarHeight: 60,
-        title: const Text(
+        title: Text(
           "Settings",
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 26),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+            fontSize: 26,
+          ),
         ),
-        actions: const [
-          Icon(Icons.more_vert, size: 28, color: Colors.black),
-          SizedBox(width: 12),
+        actions: [
+          Icon(
+            Icons.more_vert,
+            size: 28,
+            color: Theme.of(context).iconTheme.color,
+          ),
+          const SizedBox(width: 12),
         ],
         flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -55,12 +71,16 @@ class SettingsScreen extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const FolderScreen()),
           );
         },
-        backgroundColor: Colors.black,
-        child: Icon(Icons.add, color: Colors.white, size: width * 0.08),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: Icon(
+          Icons.add,
+          color: Theme.of(context).colorScheme.onPrimary,
+          size: width * 0.08,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      // Bottom Navigation Bar
+      // ✅ Bottom Navigation Bar
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: width * 0.02,
@@ -161,15 +181,15 @@ class SettingsScreen extends StatelessWidget {
                   context,
                   icon: Icons.person,
                   text: "Edit Profile",
-                  color: Colors.blue.shade100,
-                  onTap: () {},
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  onTap: () => _showEditProfileDialog(context),
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
                   context,
                   icon: Icons.timer,
                   text: "Time Management",
-                  color: Colors.orange.shade100,
+                  color: Theme.of(context).colorScheme.secondaryContainer,
                   onTap: () {},
                 ),
                 SizedBox(height: height * 0.012),
@@ -177,25 +197,23 @@ class SettingsScreen extends StatelessWidget {
                   context,
                   icon: Icons.color_lens,
                   text: "Theme",
-                  color: Colors.purple.shade100,
-                  onTap: () {
-                    _showThemeDialog(context);
-                  },
+                  color: Theme.of(context).colorScheme.tertiaryContainer,
+                  onTap: () => _showThemeDialog(context),
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
                   context,
                   icon: Icons.language,
                   text: "Language",
-                  color: Colors.green.shade100,
-                  onTap: () {},
+                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  onTap: () => _showLanguageDialog(context),
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
                   context,
                   icon: Icons.accessibility,
                   text: "Accessibility",
-                  color: Colors.red.shade100,
+                  color: Theme.of(context).colorScheme.errorContainer,
                   onTap: () {},
                 ),
               ],
@@ -206,6 +224,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  /// ✅ Theme Dialog (Dynamic switching)
   void _showThemeDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -222,32 +241,24 @@ class SettingsScreen extends StatelessWidget {
                 leading: const Icon(Icons.brightness_auto),
                 title: const Text("System Default"),
                 onTap: () {
+                  ThemeManager.themeNotifier.value = ThemeMode.system;
                   Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("System Default Theme Selected"),
-                    ),
-                  );
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.light_mode),
                 title: const Text("Light"),
                 onTap: () {
+                  ThemeManager.themeNotifier.value = ThemeMode.light;
                   Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Light Theme Selected")),
-                  );
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.dark_mode),
                 title: const Text("Dark"),
                 onTap: () {
+                  ThemeManager.themeNotifier.value = ThemeMode.dark;
                   Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Dark Theme Selected")),
-                  );
                 },
               ),
             ],
@@ -257,7 +268,175 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  /// Reusable option widget
+  /// Edit Profile Popup
+  void _showEditProfileDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final bioController = TextEditingController();
+    final ageController = TextEditingController();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext ctx) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          insetPadding: const EdgeInsets.all(20),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Edit Profile",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Profile Picture
+                  Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          profileImage = profileImage == null ? "local" : null;
+                        });
+                      },
+                      child: CircleAvatar(
+                        radius: 45,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.surfaceVariant,
+                        backgroundImage:
+                            profileImage != null
+                                ? const AssetImage("assets/profile.jpg")
+                                : null,
+                        child:
+                            profileImage == null
+                                ? Icon(
+                                  Icons.camera_alt,
+                                  size: 40,
+                                  color: Theme.of(context).iconTheme.color,
+                                )
+                                : null,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Name
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      labelText: "Name",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+
+                  // Bio
+                  TextField(
+                    controller: bioController,
+                    maxLines: 3,
+                    decoration: const InputDecoration(
+                      labelText: "Bio",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+
+                  // Age
+                  TextField(
+                    controller: ageController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: "Age",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        child: const Text("Cancel"),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          String name = nameController.text.trim();
+                          String bio = bioController.text.trim();
+                          String age = ageController.text.trim();
+
+                          Navigator.pop(ctx);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "Profile Updated\nName: $name\nBio: $bio\nAge: $age",
+                              ),
+                            ),
+                          );
+                        },
+                        child: const Text("Save"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// Language Dialog
+  void _showLanguageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: const Text("Choose Language"),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _languageTile(ctx, "English"),
+                _languageTile(ctx, "தமிழ் (Tamil)"),
+                _languageTile(ctx, "हिंदी (Hindi)"),
+                _languageTile(ctx, "తెలుగు (Telugu)"),
+                _languageTile(ctx, "ಕನ್ನಡ (Kannada)"),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _languageTile(BuildContext ctx, String lang) {
+    return ListTile(
+      leading: Icon(Icons.language, color: Theme.of(context).iconTheme.color),
+      title: Text(lang),
+      onTap: () {
+        Navigator.pop(ctx);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("$lang Selected")));
+      },
+    );
+  }
+
+  /// Reusable Option
   Widget _buildOption(
     BuildContext context, {
     required IconData icon,
@@ -272,11 +451,11 @@ class SettingsScreen extends StatelessWidget {
       margin: EdgeInsets.only(bottom: width * 0.02),
       padding: EdgeInsets.symmetric(vertical: width * 0.02),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(width * 0.04),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
+            color: Theme.of(context).shadowColor.withOpacity(0.1),
             blurRadius: 3,
             offset: const Offset(0, 1),
           ),
@@ -286,13 +465,18 @@ class SettingsScreen extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: color,
           radius: width * 0.055,
-          child: Icon(icon, color: Colors.black, size: width * 0.055),
+          child: Icon(
+            icon,
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
+            size: width * 0.055,
+          ),
         ),
         title: Text(
           text,
           style: TextStyle(
             fontSize: width * 0.045,
             fontWeight: FontWeight.w500,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ),
         onTap: onTap,

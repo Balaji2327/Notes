@@ -211,14 +211,6 @@ class MoreScreen extends StatelessWidget {
               children: [
                 _buildOption(
                   context,
-                  icon: Icons.person,
-                  text: "Profile",
-                  color: Colors.grey.shade300,
-                  onTap: () {},
-                ),
-                SizedBox(height: height * 0.012),
-                _buildOption(
-                  context,
                   icon: Icons.favorite,
                   text: "Favorites",
                   color: Colors.grey.shade300,

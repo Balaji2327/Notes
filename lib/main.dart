@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'onboardingScreen.dart';
+import 'theme.dart';
 
 void main() {
   runApp(const MainApp());
@@ -10,10 +11,55 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true, fontFamily: 'Poppins'),
-      home: const OnboardingScreen(),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: ThemeManager.themeNotifier,
+      builder: (_, ThemeMode currentMode, __) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+
+          // ✅ Light Theme
+          theme: ThemeData(
+            useMaterial3: true,
+            brightness: Brightness.light,
+            fontFamily: 'Poppins',
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+            scaffoldBackgroundColor: Colors.white,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              elevation: 0,
+            ),
+            bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+              selectedItemColor: Colors.blue,
+              unselectedItemColor: Colors.grey,
+            ),
+          ),
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            brightness: Brightness.dark,
+            fontFamily: 'Poppins',
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.tealAccent,
+              brightness: Brightness.dark,
+            ),
+            scaffoldBackgroundColor: Colors.black,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              elevation: 0,
+            ),
+            bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+              selectedItemColor: Colors.tealAccent,
+              unselectedItemColor: Colors.grey,
+            ),
+          ),
+
+          // ✅ Apply current theme
+          themeMode: currentMode,
+
+          home: const OnboardingScreen(),
+        );
+      },
     );
   }
 }
