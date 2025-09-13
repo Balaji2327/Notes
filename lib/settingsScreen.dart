@@ -24,27 +24,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final width = size.width;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Colors.white,
 
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        toolbarHeight: 60,
+        toolbarHeight: height * 0.08,
         title: Text(
           "Settings",
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 26,
+            fontSize: width * 0.065,
           ),
         ),
-        actions: [
-          Icon(
-            Icons.more_vert,
-            size: 28,
-            color: Theme.of(context).iconTheme.color,
-          ),
-          const SizedBox(width: 12),
-        ],
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -71,12 +63,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             MaterialPageRoute(builder: (context) => const FolderScreen()),
           );
         },
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: Icon(
-          Icons.add,
-          color: Theme.of(context).colorScheme.onPrimary,
-          size: width * 0.08,
-        ),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+        child: Icon(Icons.add, color: Colors.white, size: width * 0.08),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
@@ -178,42 +166,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
               padding: EdgeInsets.symmetric(horizontal: width * 0.05),
               children: [
                 _buildOption(
-                  context,
                   icon: Icons.person,
                   text: "Edit Profile",
-                  color: Theme.of(context).colorScheme.primaryContainer,
+                  color: Colors.blue.shade100,
                   onTap: () => _showEditProfileDialog(context),
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
-                  context,
                   icon: Icons.timer,
                   text: "Time Management",
-                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  color: Colors.green.shade100,
                   onTap: () {},
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
-                  context,
                   icon: Icons.color_lens,
                   text: "Theme",
-                  color: Theme.of(context).colorScheme.tertiaryContainer,
-                  onTap: () => _showThemeDialog(context),
+                  color: Colors.purple.shade100,
+                  onTap: () {
+                    _showThemeDialog(context);
+                  },
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
-                  context,
                   icon: Icons.language,
                   text: "Language",
-                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  color: Colors.orange.shade100,
                   onTap: () => _showLanguageDialog(context),
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
-                  context,
                   icon: Icons.accessibility,
                   text: "Accessibility",
-                  color: Theme.of(context).colorScheme.errorContainer,
+                  color: Colors.red.shade100,
                   onTap: () {},
                 ),
               ],
@@ -224,51 +209,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  /// ✅ Theme Dialog (Fixed)
-  void _showThemeDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext ctx) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          title: const Text("Choose Theme"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.brightness_auto),
-                title: const Text("System Default"),
-                onTap: () {
-                  ThemeManager.themeNotifier.value = ThemeMode.system;
-                  Navigator.pop(ctx);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.light_mode),
-                title: const Text("Light"),
-                onTap: () {
-                  ThemeManager.themeNotifier.value = ThemeMode.light;
-                  Navigator.pop(ctx);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.dark_mode),
-                title: const Text("Dark"),
-                onTap: () {
-                  ThemeManager.themeNotifier.value = ThemeMode.dark;
-                  Navigator.pop(ctx);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  /// Edit Profile Popup
+  /// ✅ Edit Profile Popup (Light theme only)
+  /// ✅ Edit Profile Popup (Light theme only)
   void _showEditProfileDialog(BuildContext context) {
     final nameController = TextEditingController();
     final bioController = TextEditingController();
@@ -290,11 +232,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "Edit Profile",
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                   ),
                   const SizedBox(height: 20),
 
@@ -308,18 +248,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       },
                       child: CircleAvatar(
                         radius: 45,
-                        backgroundColor:
-                            Theme.of(context).colorScheme.surfaceVariant,
+                        backgroundColor: Colors.grey.shade200,
                         backgroundImage:
                             profileImage != null
                                 ? const AssetImage("assets/profile.jpg")
                                 : null,
                         child:
                             profileImage == null
-                                ? Icon(
+                                ? const Icon(
                                   Icons.camera_alt,
                                   size: 40,
-                                  color: Theme.of(context).iconTheme.color,
+                                  color: Colors.black54,
                                 )
                                 : null,
                       ),
@@ -359,12 +298,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Buttons
+                  // ✅ Buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton(
                         onPressed: () => Navigator.pop(ctx),
+                        style: TextButton.styleFrom(
+                          foregroundColor: const Color.fromARGB(
+                            195,
+                            22,
+                            1,
+                            139,
+                          ), // same as logout popup
+                        ),
                         child: const Text("Cancel"),
                       ),
                       const SizedBox(width: 10),
@@ -383,6 +330,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           );
                         },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            135,
+                            219,
+                            101,
+                          ), // ✅ green
+                          foregroundColor: const Color.fromARGB(
+                            195,
+                            22,
+                            1,
+                            139,
+                          ), // ✅ white text
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 10,
+                          ),
+                        ),
                         child: const Text("Save"),
                       ),
                     ],
@@ -390,6 +358,52 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ],
               ),
             ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showThemeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          title: const Text("Choose Theme"),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.phone_android, color: Colors.blue),
+                title: const Text("System Default"),
+                onTap: () {
+                  ThemeManager.themeNotifier.value = ThemeMode.system;
+                  Navigator.pop(ctx);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.wb_sunny, color: Colors.orange),
+                title: const Text("Light"),
+                onTap: () {
+                  ThemeManager.themeNotifier.value = ThemeMode.light;
+                  Navigator.pop(ctx);
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.nightlight_round,
+                  color: Colors.purple,
+                ),
+                title: const Text("Dark"),
+                onTap: () {
+                  ThemeManager.themeNotifier.value = ThemeMode.dark;
+                  Navigator.pop(ctx);
+                },
+              ),
+            ],
           ),
         );
       },
@@ -425,7 +439,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _languageTile(BuildContext ctx, String lang) {
     return ListTile(
-      leading: Icon(Icons.language, color: Theme.of(context).iconTheme.color),
+      leading: const Icon(Icons.language, color: Colors.black87),
       title: Text(lang),
       onTap: () {
         Navigator.pop(ctx);
@@ -437,8 +451,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   /// Reusable Option
-  Widget _buildOption(
-    BuildContext context, {
+  Widget _buildOption({
     required IconData icon,
     required String text,
     required Color color,
@@ -451,11 +464,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       margin: EdgeInsets.only(bottom: width * 0.02),
       padding: EdgeInsets.symmetric(vertical: width * 0.02),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(width * 0.04),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).shadowColor.withOpacity(0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 3,
             offset: const Offset(0, 1),
           ),
@@ -465,18 +478,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         leading: CircleAvatar(
           backgroundColor: color,
           radius: width * 0.055,
-          child: Icon(
-            icon,
-            color: Theme.of(context).colorScheme.onPrimaryContainer,
-            size: width * 0.055,
-          ),
+          child: Icon(icon, color: Colors.black87, size: width * 0.055),
         ),
         title: Text(
           text,
           style: TextStyle(
             fontSize: width * 0.045,
             fontWeight: FontWeight.w500,
-            color: Theme.of(context).textTheme.bodyLarge?.color,
+            color: Colors.black87,
           ),
         ),
         onTap: onTap,
