@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'onboardingScreen.dart';
-import 'theme.dart';
+import 'theme.dart'; // contains ThemeManager
 
 void main() {
   runApp(const MainApp());
@@ -16,8 +16,9 @@ class MainApp extends StatelessWidget {
       builder: (_, ThemeMode currentMode, __) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
+          title: 'My App',
 
-          // ✅ Light Theme
+          // 🌞 Light Theme
           theme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.light,
@@ -28,12 +29,15 @@ class MainApp extends StatelessWidget {
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
               elevation: 0,
+              centerTitle: true,
             ),
             bottomNavigationBarTheme: const BottomNavigationBarThemeData(
               selectedItemColor: Colors.blue,
               unselectedItemColor: Colors.grey,
             ),
           ),
+
+          // 🌙 Dark Theme
           darkTheme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.dark,
@@ -47,6 +51,7 @@ class MainApp extends StatelessWidget {
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
               elevation: 0,
+              centerTitle: true,
             ),
             bottomNavigationBarTheme: const BottomNavigationBarThemeData(
               selectedItemColor: Colors.tealAccent,
@@ -54,7 +59,7 @@ class MainApp extends StatelessWidget {
             ),
           ),
 
-          // ✅ Apply current theme
+          // 🎨 Apply current theme
           themeMode: currentMode,
 
           home: const OnboardingScreen(),

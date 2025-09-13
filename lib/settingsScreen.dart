@@ -224,7 +224,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  /// ✅ Theme Dialog (Dynamic switching)
+  /// ✅ Theme Dialog (Fixed)
   void _showThemeDialog(BuildContext context) {
     showDialog(
       context: context,
