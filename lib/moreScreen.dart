@@ -4,6 +4,7 @@ import 'remainderScreen.dart';
 import 'folderScreen.dart';
 import 'statsScreen.dart';
 import 'settingsScreen.dart';
+import 'helpScreen.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -254,7 +255,14 @@ class MoreScreen extends StatelessWidget {
                   icon: Icons.help,
                   text: "Help & Support",
                   color: Colors.grey.shade300,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HelpSupportScreen(),
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(

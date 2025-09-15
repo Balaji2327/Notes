@@ -5,6 +5,8 @@ import 'folderScreen.dart';
 import 'statsScreen.dart';
 import 'moreScreen.dart';
 import 'theme.dart';
+import 'timeManagementScreen.dart';
+import 'storyScreen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -176,7 +178,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   icon: Icons.timer,
                   text: "Time Management",
                   color: Colors.green.shade100,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TimeManagementScreen(),
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
@@ -197,9 +206,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SizedBox(height: height * 0.012),
                 _buildOption(
                   icon: Icons.accessibility,
-                  text: "Accessibility",
+                  text: "Personal Story",
                   color: Colors.red.shade100,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NotepadScreen(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
