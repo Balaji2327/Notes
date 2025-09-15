@@ -5,6 +5,7 @@ import 'folderScreen.dart';
 import 'statsScreen.dart';
 import 'settingsScreen.dart';
 import 'helpScreen.dart';
+import 'policyScreen.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -247,7 +248,14 @@ class MoreScreen extends StatelessWidget {
                   icon: Icons.privacy_tip,
                   text: "Privacy policy",
                   color: Colors.grey.shade300,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PrivacyPolicyScreen(),
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(
