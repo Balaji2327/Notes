@@ -16,7 +16,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
-  flutter_launcher_icons: ^0.14.1   # ✅ added for app icon
+  flutter_launcher_icons: ^0.14.1   # ✅ only keep this for app icon
 
 flutter:
   uses-material-design: true
@@ -62,5 +62,5 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/images/app_icon.png"   # <-- replace with your app icon image
-  adaptive_icon_background: "#FFFFFF"   # solid background (can be your brand color)
-  adaptive_icon_foreground: "assets/images/app_icon.png"  # same icon, fills bigger space
+  adaptive_icon_background: "#FFFFFF"        # solid background (can be your brand color)
+  adaptive_icon_foreground: "assets/images/app_icon.png"
