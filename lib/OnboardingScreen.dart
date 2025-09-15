@@ -7,108 +7,146 @@ class OnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(width * 0.04),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(width * 0.03),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 32),
-
-                // Top Text: "Good bye\nbook & pen"
-                const Text(
-                  'Good bye\nbook & pen',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 50, fontWeight: FontWeight.w900),
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: height - MediaQuery.of(context).padding.top,
                 ),
-
-                const SizedBox(height: 25),
-
-                // Illustration Image
-                Image.asset('assets/images/front.png', height: 300),
-
-                const SizedBox(height: 30),
-
-                // Bottom Text: "Hello,\noffered"
-                const Text(
-                  'Hello,\noffered',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 50, fontWeight: FontWeight.w900),
-                ),
-
-                const SizedBox(height: 5),
-
-                // Subtext
-                const Text(
-                  'keep your information in our app',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 15, color: Colors.grey),
-                ),
-
-                const Spacer(),
-
-                // Buttons
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0,
-                    vertical: 30,
-                  ),
-                  child: Row(
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.cyanAccent[400],
-                            foregroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const LoginScreen(),
-                              ),
-                            );
-                          },
-                          child: const Text('Login'),
+                      SizedBox(height: height * 0.04),
+
+                      // Top Text
+                      Text(
+                        'Good bye\nbook & pen',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: width * 0.12, // responsive font
+                          fontWeight: FontWeight.w900,
                         ),
                       ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.greenAccent[400],
-                            foregroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const SignupScreen(),
+
+                      SizedBox(height: height * 0.03),
+
+                      // Illustration
+                      Image.asset(
+                        'assets/images/front.png',
+                        height: height * 0.35, // responsive image
+                        fit: BoxFit.contain,
+                      ),
+
+                      SizedBox(height: height * 0.03),
+
+                      // Bottom Text
+                      Text(
+                        'Hello,\noffered',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: width * 0.12,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+
+                      SizedBox(height: height * 0.01),
+
+                      // Subtext
+                      Text(
+                        'keep your information in our app',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: width * 0.04,
+                          color: Colors.grey,
+                        ),
+                      ),
+
+                      const Spacer(),
+
+                      // Buttons
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: width * 0.05,
+                          vertical: height * 0.03,
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.cyanAccent[400],
+                                  foregroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: height * 0.018,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const LoginScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  'Login',
+                                  style: TextStyle(fontSize: width * 0.045),
+                                ),
                               ),
-                            );
-                          },
-                          child: const Text('Sign up'),
+                            ),
+                            SizedBox(width: width * 0.05),
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.greenAccent[400],
+                                  foregroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: height * 0.018,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => const SignupScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  'Sign up',
+                                  style: TextStyle(fontSize: width * 0.045),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         ),

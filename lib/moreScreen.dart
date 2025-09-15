@@ -19,6 +19,39 @@ class MoreScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
 
+      // ✅ AppBar matching your snippet (transparent + gradient flexibleSpace + rounded bottom corners)
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        toolbarHeight: height * 0.08,
+        title: Text(
+          "Settings and Activity",
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: width * 0.065,
+          ),
+        ),
+        // ClipRRect ensures the rounded bottom corners are visible
+        flexibleSpace: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          ),
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromARGB(255, 74, 186, 121),
+                  Color.fromARGB(255, 1, 94, 104),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
+        ),
+      ),
+
       // Floating Add Button
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -120,32 +153,22 @@ class MoreScreen extends StatelessWidget {
         ),
       ),
 
-      // Body
+      // Body (kept your list of options)
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Profile Header
-          Container(
-            padding: EdgeInsets.all(width * 0.04),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color.fromARGB(255, 74, 186, 121),
-                  Color.fromARGB(255, 1, 94, 104),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-            ),
+          // small spacer to separate from AppBar
+          SizedBox(height: height * 0.02),
+
+          // Optional profile row below AppBar (if you want to show name/email here)
+          // If you'd rather have the profile inside the AppBar, remove this block.
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: width * 0.04),
             child: Row(
               children: [
                 CircleAvatar(
                   radius: width * 0.08,
-                  backgroundColor: const Color.fromARGB(224, 233, 230, 230),
+                  backgroundColor: const Color.fromARGB(212, 177, 209, 170),
                   child: Icon(
                     Icons.person,
                     size: width * 0.1,
@@ -174,21 +197,16 @@ class MoreScreen extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                IconButton(
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: Colors.black,
-                    size: width * 0.07,
-                  ),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const MoreScreen(),
-                      ),
-                    );
-                  },
-                ),
+                // IconButton(
+                //   icon: Icon(
+                //     Icons.more_vert,
+                //     color: Colors.black,
+                //     size: width * 0.07,
+                //   ),
+                //   onPressed: () {
+                //     // extra options
+                //   },
+                // ),
               ],
             ),
           ),
@@ -225,7 +243,6 @@ class MoreScreen extends StatelessWidget {
                   text: "Settings",
                   color: Colors.grey.shade300,
                   onTap: () {
-                    // Navigate to Settings Screen
                     Navigator.push(
                       context,
                       MaterialPageRoute(

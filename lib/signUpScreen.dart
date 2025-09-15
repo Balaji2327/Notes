@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:notes/homeScreen.dart';
 import 'loginScreen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -14,24 +15,36 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          padding: EdgeInsets.symmetric(horizontal: width * 0.06),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 30),
-              const Text(
+              SizedBox(height: height * 0.03),
+
+              // 🔤 Heading
+              Text(
                 'Join us',
-                style: TextStyle(fontSize: 50, fontWeight: FontWeight.normal),
+                style: TextStyle(
+                  fontSize: width * 0.12,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              const Text(
+              Text(
                 'Create an Account',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.normal),
+                style: TextStyle(
+                  fontSize: width * 0.07,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              const SizedBox(height: 30),
+              SizedBox(height: height * 0.04),
 
               // 🔤 Full Name
               TextField(
@@ -42,7 +55,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: height * 0.02),
 
               // ✉️ Email
               TextField(
@@ -53,7 +66,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: height * 0.02),
 
               // 🔒 Password
               TextField(
@@ -65,15 +78,21 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              SizedBox(height: height * 0.03),
 
               // ✅ Sign Up Button
               SizedBox(
                 width: double.infinity,
-                height: 70,
+                height: height * 0.065,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Handle sign up
+                    // Add sign-up logic
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF81C784),
@@ -81,17 +100,16 @@ class _SignupScreenState extends State<SignupScreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Sign up',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: width * 0.045,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
 
               // 🔲 Checkbox
               Row(
@@ -104,32 +122,36 @@ class _SignupScreenState extends State<SignupScreen> {
                       });
                     },
                   ),
-                  const Expanded(child: Text('I agree with your conditions')),
+                  Expanded(
+                    child: Text(
+                      'I agree with your conditions',
+                      style: TextStyle(fontSize: width * 0.04),
+                    ),
+                  ),
                 ],
               ),
 
-              const SizedBox(height: 10),
+              SizedBox(height: height * 0.01),
               const Center(child: Text('Or')),
-              const SizedBox(height: 20),
+              SizedBox(height: height * 0.02),
 
-              // 🔘 Google
+              // 🔘 Social buttons
               SocialLoginButton(
                 imagePath: 'assets/images/google.png',
                 text: 'Continue with Google',
+                fontSize: width * 0.04,
               ),
-              const SizedBox(height: 20),
-
-              // 🐱 GitHub
+              SizedBox(height: height * 0.015),
               SocialLoginButton(
                 imagePath: 'assets/images/github.png',
                 text: 'GitHub',
+                fontSize: width * 0.04,
               ),
-              const SizedBox(height: 20),
-
-              // 🔵 Facebook
+              SizedBox(height: height * 0.015),
               SocialLoginButton(
                 imagePath: 'assets/images/facebook.png',
                 text: 'Facebook',
+                fontSize: width * 0.04,
               ),
 
               const Spacer(),
@@ -139,16 +161,18 @@ class _SignupScreenState extends State<SignupScreen> {
                 child: RichText(
                   text: TextSpan(
                     text: 'Already have an account? ',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'Poppins',
                       color: Colors.black,
+                      fontSize: width * 0.04,
                     ),
                     children: [
                       TextSpan(
                         text: 'Log in',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.blueAccent,
                           fontWeight: FontWeight.w500,
+                          fontSize: width * 0.04,
                         ),
                         recognizer:
                             TapGestureRecognizer()
@@ -165,8 +189,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
               ),
-
-              const SizedBox(height: 20),
+              SizedBox(height: height * 0.03),
             ],
           ),
         ),
@@ -175,14 +198,17 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 }
 
+// 🔘 Social Login Button Widget
 class SocialLoginButton extends StatelessWidget {
   final String imagePath;
   final String text;
+  final double fontSize;
 
   const SocialLoginButton({
     super.key,
     required this.imagePath,
     required this.text,
+    this.fontSize = 16,
   });
 
   @override
@@ -205,7 +231,10 @@ class SocialLoginButton extends StatelessWidget {
           children: [
             Image.asset(imagePath, width: 24, height: 24),
             const SizedBox(width: 12),
-            Text(text, style: const TextStyle(fontWeight: FontWeight.w600)),
+            Text(
+              text,
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: fontSize),
+            ),
           ],
         ),
       ),

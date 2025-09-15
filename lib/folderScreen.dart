@@ -343,7 +343,10 @@ class _FolderScreenState extends State<FolderScreen> {
                               child: const Center(
                                 child: Text(
                                   "🎵 Voice waveform",
-                                  style: TextStyle(color: Colors.black54),
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
                             ),

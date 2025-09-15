@@ -10,170 +10,210 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-              const Text(
-                'Welcome!',
-                style: TextStyle(fontSize: 50, fontWeight: FontWeight.normal),
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: width * 0.06),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: height - MediaQuery.of(context).padding.top,
               ),
-              const SizedBox(height: 4),
-              const Text(
-                'Login to your account',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.normal),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'It’s nice to see you again',
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-              ),
-              const SizedBox(height: 30),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Your username or email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: 'Your password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 40),
-              SizedBox(
-                width: double.infinity,
-                height: 70,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF83C5BE),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ),
-                      );
-                    // Add login logic here
-                  },
-                  child: const Text(
-                    'Log In',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const OtpLoginScreen(),
-                        ),
-                      );
-                      // OTP logic
-                    },
-                    child: const Text(
-                      'Log In with OTP?',
-                      style: TextStyle(color: Colors.blueAccent),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ForgetPasswordScreen(),
-                        ),
-                      );
-                      // Forgot password logic
-                    },
-                    child: const Text(
-                      'Forgot password?',
-                      style: TextStyle(color: Colors.blueAccent),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              const Center(child: Text('Or')),
-              const SizedBox(height: 25),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: height * 0.03),
 
-              // 🔵 Social Buttons
-              const SocialLoginButton(
-                imagePath: 'assets/images/google.png',
-                text: 'Continue with Google',
-              ),
-              const SizedBox(height: 20),
-              const SocialLoginButton(
-                imagePath: 'assets/images/github.png',
-                text: 'GitHub',
-              ),
-              const SizedBox(height: 20),
-              const SocialLoginButton(
-                imagePath: 'assets/images/facebook.png',
-                text: 'Facebook',
-              ),
-
-              const Spacer(),
-
-              // 🔵 Sign up redirect
-              Center(
-                child: RichText(
-                  text: TextSpan(
-                    text: "Don’t have an account? ",
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      color: Colors.black,
-                    ),
-
-                    children: [
-                      TextSpan(
-                        text: "Sign up",
-                        style: const TextStyle(
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        recognizer:
-                            TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const SignupScreen(),
-                                  ),
-                                );
-                              },
+                    // Title
+                    Text(
+                      'Welcome!',
+                      style: TextStyle(
+                        fontSize: width * 0.12,
+                        fontWeight: FontWeight.w600,
                       ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(height: height * 0.005),
+                    Text(
+                      'Login to your account',
+                      style: TextStyle(
+                        fontSize: width * 0.07,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: height * 0.015),
+                    Text(
+                      'It’s nice to see you again',
+                      style: TextStyle(
+                        fontSize: width * 0.04,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+
+                    SizedBox(height: height * 0.04),
+
+                    // Username
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Your username or email',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: height * 0.03),
+
+                    // Password
+                    TextField(
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        hintText: 'Your password',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: height * 0.05),
+
+                    // Login button
+                    SizedBox(
+                      width: double.infinity,
+                      height: height * 0.065,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF83C5BE),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Log In',
+                          style: TextStyle(
+                            fontSize: width * 0.045,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: height * 0.015),
+
+                    // OTP & Forgot password
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const OtpLoginScreen(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'Log In with OTP?',
+                            style: TextStyle(color: Colors.blueAccent),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => const ForgetPasswordScreen(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'Forgot password?',
+                            style: TextStyle(color: Colors.blueAccent),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: height * 0.02),
+                    const Center(child: Text('Or')),
+                    SizedBox(height: height * 0.03),
+
+                    // Social Buttons
+                    SocialLoginButton(
+                      imagePath: 'assets/images/google.png',
+                      text: 'Continue with Google',
+                      fontSize: width * 0.04,
+                    ),
+                    SizedBox(height: height * 0.02),
+                    SocialLoginButton(
+                      imagePath: 'assets/images/github.png',
+                      text: 'GitHub',
+                      fontSize: width * 0.04,
+                    ),
+                    SizedBox(height: height * 0.02),
+                    SocialLoginButton(
+                      imagePath: 'assets/images/facebook.png',
+                      text: 'Facebook',
+                      fontSize: width * 0.04,
+                    ),
+
+                    const Spacer(),
+
+                    // Sign up link
+                    Center(
+                      child: RichText(
+                        text: TextSpan(
+                          text: "Don’t have an account? ",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors.black,
+                            fontSize: width * 0.04,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: "Sign up",
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontWeight: FontWeight.w500,
+                                fontSize: width * 0.04,
+                              ),
+                              recognizer:
+                                  TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => const SignupScreen(),
+                                        ),
+                                      );
+                                    },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: height * 0.03),
+                  ],
                 ),
               ),
-              const SizedBox(height: 20),
-            ],
+            ),
           ),
         ),
       ),
@@ -185,11 +225,13 @@ class LoginScreen extends StatelessWidget {
 class SocialLoginButton extends StatelessWidget {
   final String imagePath;
   final String text;
+  final double fontSize;
 
   const SocialLoginButton({
     Key? key,
     required this.imagePath,
     required this.text,
+    this.fontSize = 16,
   }) : super(key: key);
 
   @override
@@ -198,9 +240,7 @@ class SocialLoginButton extends StatelessWidget {
       width: double.infinity,
       height: 50,
       child: OutlinedButton(
-        onPressed: () {
-          // Add social login logic here
-        },
+        onPressed: () {},
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
@@ -212,7 +252,7 @@ class SocialLoginButton extends StatelessWidget {
           children: [
             Image.asset(imagePath, height: 24, width: 24),
             const SizedBox(width: 12),
-            Text(text),
+            Text(text, style: TextStyle(fontSize: fontSize)),
           ],
         ),
       ),
