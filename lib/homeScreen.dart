@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
       // ✅ Floating Add Button
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // 👉 Go to FolderScreen
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const FolderScreen()),
@@ -82,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              SizedBox(width: width * 0.05),
               Row(
                 children: [
                   IconButton(
@@ -124,16 +122,20 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
 
       // ✅ Body
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(width * 0.04),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Container(
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Gradient Header - Full Width Attached with Curved Bottom
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(width * 0.06),
+                bottomRight: Radius.circular(width * 0.06),
+              ),
+              child: Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
                     colors: [
                       Color.fromARGB(255, 74, 186, 121),
                       Color.fromARGB(255, 1, 94, 104),
@@ -141,12 +143,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(width * 0.04),
                 ),
-                padding: EdgeInsets.all(width * 0.04),
+                padding: EdgeInsets.symmetric(
+                  horizontal: width * 0.04,
+                  vertical: height * 0.03,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(height: MediaQuery.of(context).padding.top),
                     Text(
                       "Hello, Siddharth P",
                       style: TextStyle(
@@ -180,132 +185,137 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: height * 0.03),
+            ),
 
-              // My Folders
-              Text(
-                "My Folders",
-                style: TextStyle(
-                  fontSize: width * 0.045,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: height * 0.015),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  _FolderItem(icon: Icons.folder, label: "Home work"),
-                  _FolderItem(icon: Icons.folder, label: "Workout"),
-                  _FolderItem(icon: Icons.folder, label: "Sports"),
-                ],
-              ),
-              SizedBox(height: height * 0.03),
+            SizedBox(height: height * 0.03),
 
-              // Recent Notes
-              Text(
-                "Recent Notes",
-                style: TextStyle(
-                  fontSize: width * 0.045,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: height * 0.015),
-
-              Row(
+            // My Folders & Other Sections
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: width * 0.04),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Voice Note Card
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(width * 0.03),
-                      margin: EdgeInsets.only(right: width * 0.02),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFD4F5D4),
-                        borderRadius: BorderRadius.circular(width * 0.03),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Voice note",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: width * 0.04,
-                            ),
+                  Text(
+                    "My Folders",
+                    style: TextStyle(
+                      fontSize: width * 0.045,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: height * 0.015),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: const [
+                      _FolderItem(icon: Icons.folder, label: "Home work"),
+                      _FolderItem(icon: Icons.folder, label: "Workout"),
+                      _FolderItem(icon: Icons.folder, label: "Sports"),
+                    ],
+                  ),
+                  SizedBox(height: height * 0.03),
+
+                  // Recent Notes
+                  Text(
+                    "Recent Notes",
+                    style: TextStyle(
+                      fontSize: width * 0.045,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: height * 0.015),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(width * 0.03),
+                          margin: EdgeInsets.only(right: width * 0.02),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFD4F5D4),
+                            borderRadius: BorderRadius.circular(width * 0.03),
                           ),
-                          SizedBox(height: height * 0.01),
-                          Row(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(
-                                Icons.play_arrow,
-                                size: width * 0.08,
-                                color: Colors.black,
-                              ),
-                              SizedBox(width: width * 0.02),
-                              Expanded(
-                                child: Icon(
-                                  Icons.multitrack_audio,
-                                  size: width * 0.15,
-                                  color: Colors.black,
+                              Text(
+                                "Voice note",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: width * 0.04,
                                 ),
+                              ),
+                              SizedBox(height: height * 0.01),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.play_arrow,
+                                    size: width * 0.08,
+                                    color: Colors.black,
+                                  ),
+                                  SizedBox(width: width * 0.02),
+                                  Expanded(
+                                    child: Icon(
+                                      Icons.multitrack_audio,
+                                      size: width * 0.15,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(width * 0.03),
+                          margin: EdgeInsets.only(left: width * 0.02),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(width * 0.03),
+                          ),
+                          child: Text(
+                            "List of plans for this week\n"
+                            "Going to bangalore in this weekend and also explore the famous Temple at karnataka. "
+                            "On this week end there is a CSK vs RCB match at chinnaswamy stadium...",
+                            style: TextStyle(fontSize: width * 0.03),
+                            maxLines: 10,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  SizedBox(height: height * 0.02),
 
-                  // List of plans Card
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.all(width * 0.03),
-                      margin: EdgeInsets.only(left: width * 0.02),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(width * 0.03),
-                      ),
-                      child: Text(
-                        "List of plans for this week\n"
-                        "Going to bangalore in this weekend and also explore the famous Temple at karnataka. "
-                        "On this week end there is a CSK vs RCB match at chinnaswamy stadium...",
-                        style: TextStyle(fontSize: width * 0.03),
-                        maxLines: 10,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                  // Grocery List
+                  Container(
+                    padding: EdgeInsets.all(width * 0.03),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(width * 0.03),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Text(
+                          "Grocery Lists",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        _BulletText(text: "Apple 1kg"),
+                        _BulletText(text: "Vegetables"),
+                        _BulletText(text: "Snacks"),
+                        _BulletText(text: "Milk"),
+                      ],
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: height * 0.02),
-
-              // Grocery List
-              Container(
-                padding: EdgeInsets.all(width * 0.03),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(width * 0.03),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      "Grocery Lists",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    _BulletText(text: "Apple 1kg"),
-                    _BulletText(text: "Vegetables"),
-                    _BulletText(text: "Snacks"),
-                    _BulletText(text: "Milk"),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
