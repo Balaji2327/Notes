@@ -38,11 +38,12 @@ class OnboardingScreen extends StatelessWidget {
 
                 SizedBox(height: height * 0.03),
 
-                // Illustration
-                Image.asset(
-                  'assets/images/front.png',
-                  height: height * 0.35,
-                  fit: BoxFit.contain,
+                // Illustration -> takes available space
+                Expanded(
+                  child: Image.asset(
+                    'assets/images/front.png',
+                    fit: BoxFit.contain,
+                  ),
                 ),
 
                 SizedBox(height: height * 0.03),
@@ -66,9 +67,9 @@ class OnboardingScreen extends StatelessWidget {
                   style: TextStyle(fontSize: width * 0.04, color: Colors.grey),
                 ),
 
-                const Spacer(),
+                SizedBox(height: height * 0.03),
 
-                // Buttons
+                // Buttons at bottom
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: width * 0.05,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'homeScreen.dart';
 import 'remainderScreen.dart';
 import 'moreScreen.dart';
 import 'statsScreen.dart';
+import 'folderDetailsScreen.dart'; // Make sure you have this screen
 
 class FolderScreen extends StatefulWidget {
   const FolderScreen({super.key});
@@ -12,92 +14,146 @@ class FolderScreen extends StatefulWidget {
 }
 
 class _FolderScreenState extends State<FolderScreen> {
-  // List of folders
-  List<String> folders = ["Home work", "Workout", "Sports"];
-
-  // Example tasks ending today
+  List<String> folders = [];
   List<String> tasksEndingToday = ["Submit assignment", "Evening workout"];
 
-  // Add new folder (from dialog)
+  @override
+  void initState() {
+    super.initState();
+    _loadFolders();
+  }
+
+  // Load folders from SharedPreferences
+  Future<void> _loadFolders() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      folders =
+          prefs.getStringList("folders") ?? ["Home work", "Workout", "Sports"];
+    });
+  }
+
+  // Save folders to SharedPreferences
+  Future<void> _saveFolders() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList("folders", folders);
+  }
+
+  // Create new folder
   void _createFolder() {
     TextEditingController controller = TextEditingController();
     showDialog(
       context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: const Text("Create New Folder"),
-          content: TextField(
-            controller: controller,
-            decoration: const InputDecoration(hintText: "Enter folder name"),
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text("Create New Folder"),
+            content: TextField(
+              controller: controller,
+              decoration: const InputDecoration(hintText: "Enter folder name"),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (controller.text.trim().isNotEmpty) {
+                    setState(() {
+                      folders.add(controller.text.trim());
+                    });
+                    _saveFolders();
+                    Navigator.pop(ctx);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 135, 219, 101),
+                ),
+                child: const Text("Add"),
+              ),
+            ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (controller.text.trim().isNotEmpty) {
-                  setState(() {
-                    folders.add(controller.text.trim());
-                  });
-                  Navigator.pop(ctx);
-                }
-              },
-              child: const Text("Add"),
-            ),
-          ],
-        );
-      },
     );
   }
 
-  // ✅ Function to open recorder popup (center of screen)
+  // Delete folder
+  void _deleteFolder(int index) {
+    showDialog(
+      context: context,
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text("Delete Folder"),
+            content: Text(
+              "Are you sure you want to delete '${folders[index]}'?",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    folders.removeAt(index);
+                  });
+                  _saveFolders();
+                  Navigator.pop(ctx);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(201, 255, 0, 0),
+                ),
+                child: const Text("Delete"),
+              ),
+            ],
+          ),
+    );
+  }
+
+  // Open voice recorder popup
   void _openRecorder() {
     showDialog(
       context: context,
-      barrierDismissible: true, // tap outside to close
-      builder: (context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  "Voice Recorder",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 20),
-
-                // Mic button
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context); // close popup for now
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Recording started...")),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.green[100],
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.mic, size: 40, color: Colors.green),
+      barrierDismissible: true,
+      builder:
+          (context) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    "Voice Recorder",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
-                ),
-
-                const SizedBox(height: 20),
-                const Text("Tap mic to start recording"),
-              ],
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Recording started...")),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.green[100],
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.mic,
+                        size: 40,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text("Tap mic to start recording"),
+                ],
+              ),
             ),
           ),
-        );
-      },
     );
   }
 
@@ -109,8 +165,6 @@ class _FolderScreenState extends State<FolderScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
-
-      // ✅ Gradient AppBar
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -140,8 +194,6 @@ class _FolderScreenState extends State<FolderScreen> {
           ),
         ),
       ),
-
-      // ✅ Bottom Navigation Bar
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: width * 0.02,
@@ -188,7 +240,6 @@ class _FolderScreenState extends State<FolderScreen> {
                   ),
                 ],
               ),
-              SizedBox(width: width * 0.05),
               Row(
                 children: [
                   IconButton(
@@ -228,16 +279,12 @@ class _FolderScreenState extends State<FolderScreen> {
           ),
         ),
       ),
-
-      // ✅ Floating Add Button
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.black,
-        onPressed: _createFolder, // opens dialog
+        onPressed: _createFolder,
         child: const Icon(Icons.add, color: Colors.white, size: 32),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
-      // ✅ Body
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -246,12 +293,10 @@ class _FolderScreenState extends State<FolderScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-
-                // New Folder + Dynamic Folder Grid
                 GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: folders.length + 1, // extra "New Folder"
+                  itemCount: folders.length + 1,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     crossAxisSpacing: 12,
@@ -259,7 +304,7 @@ class _FolderScreenState extends State<FolderScreen> {
                   ),
                   itemBuilder: (context, index) {
                     if (index == 0) {
-                      // "New Folder" box
+                      // "New Folder" button
                       return GestureDetector(
                         onTap: _createFolder,
                         child: Column(
@@ -283,16 +328,30 @@ class _FolderScreenState extends State<FolderScreen> {
                         ),
                       );
                     } else {
-                      return FolderItem(
-                        icon: Icons.folder,
-                        title: folders[index - 1],
+                      // Existing folders: tap opens FolderDetailScreen
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => FolderDetailScreen(
+                                    folderName: folders[index - 1],
+                                  ),
+                            ),
+                          );
+                        },
+                        onLongPress: () => _deleteFolder(index - 1),
+                        child: FolderItem(
+                          icon: Icons.folder,
+                          title: folders[index - 1],
+                        ),
                       );
                     }
                   },
                 ),
                 const SizedBox(height: 20),
-
-                // Add voice note card (static UI)
+                // Voice note card
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -372,19 +431,14 @@ class _FolderScreenState extends State<FolderScreen> {
                           const SizedBox(width: 16),
                           IconButton(
                             icon: const Icon(Icons.mic, color: Colors.green),
-                            onPressed: () {
-                              _openRecorder();
-                            },
+                            onPressed: _openRecorder,
                           ),
                         ],
                       ),
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 35),
-
-                // ✅ "Task End Today" Alert Message
                 if (tasksEndingToday.isNotEmpty)
                   Container(
                     padding: const EdgeInsets.all(16),
@@ -442,7 +496,7 @@ class _FolderScreenState extends State<FolderScreen> {
   }
 }
 
-// ------------------ FOLDER ITEM WIDGET ------------------
+// Folder Item Widget
 class FolderItem extends StatelessWidget {
   final IconData icon;
   final String title;
