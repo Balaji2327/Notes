@@ -16,6 +16,7 @@ class FolderScreen extends StatefulWidget {
 class _FolderScreenState extends State<FolderScreen> {
   List<String> folders = [];
   List<String> tasksEndingToday = ["Submit assignment", "Evening workout"];
+  bool showRecorder = false; // State to show original recorder
 
   @override
   void initState() {
@@ -109,8 +110,12 @@ class _FolderScreenState extends State<FolderScreen> {
   }
 
   // Open voice recorder popup
-  void _openRecorder() {
-    showDialog(
+  void _openRecorderPopup() async {
+    setState(
+      () => showRecorder = false,
+    ); // Hide original recorder while popup is open
+
+    await showDialog(
       context: context,
       barrierDismissible: true,
       builder:
@@ -134,6 +139,8 @@ class _FolderScreenState extends State<FolderScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Recording started...")),
                       );
+                      // After popup closes, show original recorder
+                      setState(() => showRecorder = true);
                     },
                     child: Container(
                       padding: const EdgeInsets.all(20),
@@ -155,6 +162,9 @@ class _FolderScreenState extends State<FolderScreen> {
             ),
           ),
     );
+
+    // If user dismissed popup by tapping outside
+    setState(() => showRecorder = true);
   }
 
   @override
@@ -304,7 +314,6 @@ class _FolderScreenState extends State<FolderScreen> {
                   ),
                   itemBuilder: (context, index) {
                     if (index == 0) {
-                      // "New Folder" button
                       return GestureDetector(
                         onTap: _createFolder,
                         child: Column(
@@ -328,7 +337,6 @@ class _FolderScreenState extends State<FolderScreen> {
                         ),
                       );
                     } else {
-                      // Existing folders: tap opens FolderDetailScreen
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -431,10 +439,32 @@ class _FolderScreenState extends State<FolderScreen> {
                           const SizedBox(width: 16),
                           IconButton(
                             icon: const Icon(Icons.mic, color: Colors.green),
-                            onPressed: _openRecorder,
+                            onPressed: _openRecorderPopup,
                           ),
                         ],
                       ),
+                      // Show original recorder if state is true
+                      if (showRecorder)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.green[50],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: const [
+                                Icon(Icons.mic, size: 30, color: Colors.green),
+                                SizedBox(width: 12),
+                                Text(
+                                  "Voice recorder ready...",
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
