@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'homeScreen.dart';
 import 'moreScreen.dart';
 import 'folderScreen.dart';
@@ -13,20 +14,97 @@ class AddReminderScreen extends StatefulWidget {
 }
 
 class _AddReminderScreenState extends State<AddReminderScreen> {
-  DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
-  TimeOfDay? selectedTime;
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
 
-  Future<void> _pickTime({TimeOfDay? initialTime}) async {
-    final TimeOfDay? picked = await showTimePicker(
+  final List<TimeOfDay> _quickTimes = [
+    TimeOfDay(hour: 9, minute: 0),
+    TimeOfDay(hour: 12, minute: 30),
+    TimeOfDay(hour: 18, minute: 0),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReminder();
+  }
+
+  // Load saved date and time
+  void _loadReminder() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? dateString = prefs.getString('reminder_date');
+    int? hour = prefs.getInt('reminder_hour');
+    int? minute = prefs.getInt('reminder_minute');
+
+    setState(() {
+      if (dateString != null) {
+        _selectedDate = DateTime.tryParse(dateString);
+      }
+      if (hour != null && minute != null) {
+        _selectedTime = TimeOfDay(hour: hour, minute: minute);
+      }
+    });
+  }
+
+  // Save date and time
+  void _saveReminder() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_selectedDate != null) {
+      prefs.setString('reminder_date', _selectedDate!.toIso8601String());
+    }
+    if (_selectedTime != null) {
+      prefs.setInt('reminder_hour', _selectedTime!.hour);
+      prefs.setInt('reminder_minute', _selectedTime!.minute);
+    }
+  }
+
+  Future<void> _pickDate() async {
+    final DateTime? picked = await showDatePicker(
       context: context,
-      initialTime: initialTime ?? TimeOfDay.now(),
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+      helpText: "Select reminder date",
     );
     if (picked != null) {
       setState(() {
-        selectedTime = picked;
+        _selectedDate = picked;
       });
+      _saveReminder();
     }
+  }
+
+  Future<void> _pickCupertinoTime() async {
+    DateTime now = DateTime.now();
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext builder) {
+        return Container(
+          height: 250,
+          color: CupertinoColors.systemBackground.resolveFrom(context),
+          child: CupertinoDatePicker(
+            mode: CupertinoDatePickerMode.time,
+            initialDateTime: DateTime(
+              now.year,
+              now.month,
+              now.day,
+              _selectedTime?.hour ?? now.hour,
+              _selectedTime?.minute ?? now.minute,
+            ),
+            use24hFormat: false,
+            onDateTimeChanged: (DateTime value) {
+              setState(() {
+                _selectedTime = TimeOfDay(
+                  hour: value.hour,
+                  minute: value.minute,
+                );
+              });
+              _saveReminder();
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -37,13 +115,12 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         toolbarHeight: 60,
         title: const Text(
-          "Add Remainder!",
+          "Add Reminder!",
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 26),
         ),
         actions: const [
@@ -67,7 +144,6 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
           ),
         ),
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -75,145 +151,128 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
           children: [
             const SizedBox(height: 12),
             const Text(
-              "Select date & time",
+              "When would you like to be reminded?",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
-
-            const SizedBox(height: 12),
-
-            // Real Calendar
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: Colors.green.shade50,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.3),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: TableCalendar(
-                firstDay: DateTime(2000),
-                lastDay: DateTime(2100),
-                focusedDay: _focusedDay,
-                selectedDayPredicate: (day) {
-                  return isSameDay(_selectedDay, day);
-                },
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                  });
-                },
-                calendarStyle: const CalendarStyle(
-                  todayDecoration: BoxDecoration(
-                    color: Colors.teal,
-                    shape: BoxShape.circle,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                headerStyle: const HeaderStyle(
-                  formatButtonVisible: false,
-                  titleCentered: true,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            const Text(
-              "Time for reminding",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-            ),
-
-            const SizedBox(height: 12),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                  ),
-                  onPressed: () {
-                    _pickTime(
-                      initialTime: const TimeOfDay(hour: 10, minute: 30),
-                    );
-                  },
-                  child: const Text("10.30 AM"),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                  ),
-                  onPressed: () {
-                    _pickTime(
-                      initialTime: const TimeOfDay(hour: 18, minute: 0),
-                    );
-                  },
-                  child: const Text("6.00 PM"),
-                ),
-              ],
-            ),
-
             const SizedBox(height: 16),
-
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: const StadiumBorder(),
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
+            GestureDetector(
+              onTap: _pickDate,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
                 ),
-                onPressed: () {
-                  _pickTime(); // opens with current time
-                },
-                child: const Text("Or input manual"),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.greenAccent.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.date_range, color: Colors.teal),
+                    const SizedBox(width: 16),
+                    Text(
+                      _selectedDate == null
+                          ? "Select Date"
+                          : "${_selectedDate!.day.toString().padLeft(2, '0')} / ${_selectedDate!.month.toString().padLeft(2, '0')} / ${_selectedDate!.year}",
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-
-            if (selectedTime != null) ...[
-              const SizedBox(height: 20),
+            const SizedBox(height: 26),
+            const Text(
+              "Pick a time",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 14,
+              children:
+                  _quickTimes.map((option) {
+                    final isSelected =
+                        _selectedTime != null &&
+                        _selectedTime!.hour == option.hour &&
+                        _selectedTime!.minute == option.minute;
+                    return ChoiceChip(
+                      selectedColor: Colors.teal,
+                      backgroundColor: Colors.teal.shade50,
+                      label: Text(
+                        option.format(context),
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : Colors.teal,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      selected: isSelected,
+                      onSelected: (_) {
+                        setState(() => _selectedTime = option);
+                        _saveReminder();
+                      },
+                      shape: StadiumBorder(
+                        side: BorderSide(color: Colors.teal.withOpacity(0.2)),
+                      ),
+                    );
+                  }).toList(),
+            ),
+            const SizedBox(height: 14),
+            Center(
+              child: OutlinedButton.icon(
+                onPressed: _pickCupertinoTime,
+                style: OutlinedButton.styleFrom(
+                  shape: const StadiumBorder(),
+                  side: const BorderSide(color: Colors.teal, width: 2),
+                  foregroundColor: Colors.teal,
+                ),
+                icon: const Icon(Icons.edit, size: 20),
+                label: const Text("Custom time"),
+              ),
+            ),
+            if (_selectedTime != null) ...[
+              const SizedBox(height: 22),
               Center(
                 child: Text(
-                  "Selected Time: ${selectedTime!.format(context)}",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.black87,
-                  ),
+                  "Selected: ${_selectedTime!.format(context)}",
+                  style: const TextStyle(fontSize: 18, color: Colors.black87),
+                ),
+              ),
+            ],
+            if (_selectedDate != null) ...[
+              const SizedBox(height: 8),
+              Center(
+                child: Text(
+                  "Selected date: "
+                  "${_selectedDate!.day.toString().padLeft(2, '0')}/"
+                  "${_selectedDate!.month.toString().padLeft(2, '0')}/"
+                  "${_selectedDate!.year}",
+                  style: const TextStyle(fontSize: 16, color: Colors.black54),
                 ),
               ),
             ],
           ],
         ),
       ),
-
-      // ✅ Floating Action Button
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-              builder: (context) => const FolderScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const FolderScreen()),
           );
         },
         backgroundColor: Colors.black,
         child: const Icon(Icons.add, color: Colors.white, size: 32),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
-      // ✅ Bottom Navigation Bar with 5 icons
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: width * 0.02,
