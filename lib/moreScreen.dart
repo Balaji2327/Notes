@@ -197,16 +197,6 @@ class MoreScreen extends StatelessWidget {
                   ],
                 ),
                 const Spacer(),
-                // IconButton(
-                //   icon: Icon(
-                //     Icons.more_vert,
-                //     color: Colors.black,
-                //     size: width * 0.07,
-                //   ),
-                //   onPressed: () {
-                //     // extra options
-                //   },
-                // ),
               ],
             ),
           ),
