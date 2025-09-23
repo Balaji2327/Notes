@@ -233,7 +233,7 @@ class MoreScreen extends StatelessWidget {
                   context,
                   icon: Icons.favorite,
                   text: "Favorites",
-                  color: Colors.grey.shade300,
+                  color: Colors.pinkAccent.shade100, // ❤️ Pink
                   onTap: () {},
                 ),
                 SizedBox(height: height * 0.012),
@@ -241,7 +241,7 @@ class MoreScreen extends StatelessWidget {
                   context,
                   icon: Icons.settings,
                   text: "Settings",
-                  color: Colors.grey.shade300,
+                  color: Colors.blue.shade200, // ⚙️ Blue
                   onTap: () {
                     Navigator.push(
                       context,
@@ -256,7 +256,7 @@ class MoreScreen extends StatelessWidget {
                   context,
                   icon: Icons.share,
                   text: "Share this app",
-                  color: Colors.grey.shade300,
+                  color: Colors.orange.shade200, // 📤 Orange
                   onTap: () {},
                 ),
                 SizedBox(height: height * 0.012),
@@ -264,7 +264,7 @@ class MoreScreen extends StatelessWidget {
                   context,
                   icon: Icons.privacy_tip,
                   text: "Privacy policy",
-                  color: Colors.grey.shade300,
+                  color: Colors.teal.shade200, // 🛡️ Teal
                   onTap: () {
                     Navigator.push(
                       context,
@@ -279,7 +279,7 @@ class MoreScreen extends StatelessWidget {
                   context,
                   icon: Icons.help,
                   text: "Help & Support",
-                  color: Colors.grey.shade300,
+                  color: Colors.amber.shade200, // ❓ Amber
                   onTap: () {
                     Navigator.push(
                       context,
@@ -294,7 +294,7 @@ class MoreScreen extends StatelessWidget {
                   context,
                   icon: Icons.logout,
                   text: "Log Out",
-                  color: Colors.grey.shade300,
+                  color: Colors.red.shade300, // 🔴 Red
                   onTap: () {
                     _showLogoutDialog(context);
                   },
