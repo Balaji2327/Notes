@@ -1,14 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'homeScreen.dart';
 import 'remainderScreen.dart';
 import 'moreScreen.dart';
 import 'statsScreen.dart';
 import 'folderScreen.dart';
 
-class FolderDetailScreen extends StatelessWidget {
+class FolderDetailScreen extends StatefulWidget {
   final String folderName;
 
   const FolderDetailScreen({super.key, required this.folderName});
+
+  @override
+  State<FolderDetailScreen> createState() => _FolderDetailScreenState();
+}
+
+class _FolderDetailScreenState extends State<FolderDetailScreen> {
+  bool isPinned = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfPinned();
+  }
+
+  Future<void> _checkIfPinned() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> pinnedFolders = prefs.getStringList("pinnedFolders") ?? [];
+    setState(() {
+      isPinned = pinnedFolders.contains(widget.folderName);
+    });
+  }
+
+  Future<void> _togglePin() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> pinnedFolders = prefs.getStringList("pinnedFolders") ?? [];
+
+    setState(() {
+      if (isPinned) {
+        pinnedFolders.remove(widget.folderName);
+        isPinned = false;
+      } else {
+        pinnedFolders.add(widget.folderName);
+        isPinned = true;
+      }
+    });
+
+    await prefs.setStringList("pinnedFolders", pinnedFolders);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          isPinned
+              ? "Pinned '${widget.folderName}'"
+              : "Unpinned '${widget.folderName}'",
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,15 +69,25 @@ class FolderDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
 
-      // ✅ Same Gradient AppBar
+      // ✅ Gradient AppBar with Pin Button
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         toolbarHeight: 60,
         title: Text(
-          folderName,
+          widget.folderName,
           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 26),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+              color: isPinned ? Colors.orange : Colors.black,
+              size: width * 0.07,
+            ),
+            onPressed: _togglePin,
+          ),
+        ],
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -148,7 +208,7 @@ class FolderDetailScreen extends StatelessWidget {
 
       body: Center(
         child: Text(
-          "This is the '$folderName' folder screen",
+          "This is the '${widget.folderName}' folder screen",
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),

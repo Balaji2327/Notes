@@ -313,21 +313,24 @@ class _FolderScreenState extends State<FolderScreen> {
                     mainAxisSpacing: 12,
                   ),
                   itemBuilder: (context, index) {
+                    final buttonSize = width * 0.18; // responsive size
+                    final iconSize = width * 0.09; // responsive icon size
+
                     if (index == 0) {
                       return GestureDetector(
                         onTap: _createFolder,
                         child: Column(
                           children: [
                             Container(
-                              height: 80,
-                              width: 80,
+                              height: buttonSize,
+                              width: buttonSize,
                               decoration: BoxDecoration(
                                 color: Colors.grey[200],
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.add,
-                                size: 40,
+                                size: iconSize,
                                 color: Colors.black,
                               ),
                             ),
@@ -358,6 +361,7 @@ class _FolderScreenState extends State<FolderScreen> {
                     }
                   },
                 ),
+
                 const SizedBox(height: 20),
                 // Voice note card
                 Container(

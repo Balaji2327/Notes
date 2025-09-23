@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'moreScreen.dart';
 import 'remainderScreen.dart';
 import 'folderScreen.dart';
 import 'statsScreen.dart';
+import 'folderDetailsScreen.dart'; // ✅ Make sure this file exists
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,6 +14,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<String> pinnedFolders = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPinnedFolders();
+  }
+
+  Future<void> _loadPinnedFolders() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      pinnedFolders = prefs.getStringList('pinnedFolders') ?? [];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -27,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const FolderScreen()),
-          );
+          ).then((_) => _loadPinnedFolders());
         },
         backgroundColor: Colors.black,
         child: Icon(Icons.add, color: Colors.white, size: width * 0.08),
@@ -126,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Gradient Header - Full Width Attached with Curved Bottom
+            // Gradient Header
             ClipRRect(
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(width * 0.06),
@@ -189,28 +206,58 @@ class _HomeScreenState extends State<HomeScreen> {
 
             SizedBox(height: height * 0.03),
 
-            // My Folders & Other Sections
+            // 🔹 Pinned Folders Section
             Padding(
               padding: EdgeInsets.symmetric(horizontal: width * 0.04),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "My Folders",
+                    "Pinned Folders",
                     style: TextStyle(
                       fontSize: width * 0.045,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   SizedBox(height: height * 0.015),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: const [
-                      _FolderItem(icon: Icons.folder, label: "Home work"),
-                      _FolderItem(icon: Icons.folder, label: "Workout"),
-                      _FolderItem(icon: Icons.folder, label: "Sports"),
-                    ],
-                  ),
+
+                  pinnedFolders.isEmpty
+                      ? Text(
+                        "No pinned folders yet.",
+                        style: TextStyle(
+                          fontSize: width * 0.035,
+                          color: Colors.grey,
+                        ),
+                      )
+                      : SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children:
+                              pinnedFolders.map((folder) {
+                                return Padding(
+                                  padding: EdgeInsets.only(right: width * 0.05),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => FolderDetailScreen(
+                                                folderName: folder,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                    child: _FolderItem(
+                                      icon: Icons.folder,
+                                      label: folder,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                        ),
+                      ),
+
                   SizedBox(height: height * 0.03),
 
                   // Recent Notes
