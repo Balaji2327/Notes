@@ -17,37 +17,37 @@ class FolderDetailScreen extends StatefulWidget {
 
 class _FolderDetailScreenState extends State<FolderDetailScreen> {
   bool isPinned = false;
-  bool isFavorite = false; // ❤️ New flag
+  bool isFavorite = false;
 
   @override
   void initState() {
     super.initState();
-    _checkIfPinned();
-    _checkIfFavorite();
+    _loadPinnedStatus();
+    _loadFavoriteStatus();
   }
 
-  // ✅ Check pinned state
-  Future<void> _checkIfPinned() async {
+  // Load pinned status
+  Future<void> _loadPinnedStatus() async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> pinnedFolders = prefs.getStringList("pinnedFolders") ?? [];
+    final pinnedFolders = prefs.getStringList('pinnedFolders') ?? [];
     setState(() {
       isPinned = pinnedFolders.contains(widget.folderName);
     });
   }
 
-  // ✅ Check favorite state
-  Future<void> _checkIfFavorite() async {
+  // Load favorite status
+  Future<void> _loadFavoriteStatus() async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> favoriteFolders = prefs.getStringList("favoriteFolders") ?? [];
+    final favoriteFolders = prefs.getStringList('favoriteFolders') ?? [];
     setState(() {
       isFavorite = favoriteFolders.contains(widget.folderName);
     });
   }
 
-  // ✅ Toggle pin
+  // Toggle pin
   Future<void> _togglePin() async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> pinnedFolders = prefs.getStringList("pinnedFolders") ?? [];
+    final pinnedFolders = prefs.getStringList('pinnedFolders') ?? [];
 
     setState(() {
       if (isPinned) {
@@ -59,24 +59,13 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
       }
     });
 
-    await prefs.setStringList("pinnedFolders", pinnedFolders);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          isPinned
-              ? "Pinned '${widget.folderName}'"
-              : "Unpinned '${widget.folderName}'",
-        ),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    await prefs.setStringList('pinnedFolders', pinnedFolders);
   }
 
-  // ✅ Toggle favorite
+  // Toggle favorite
   Future<void> _toggleFavorite() async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> favoriteFolders = prefs.getStringList("favoriteFolders") ?? [];
+    final favoriteFolders = prefs.getStringList('favoriteFolders') ?? [];
 
     setState(() {
       if (isFavorite) {
@@ -88,18 +77,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
       }
     });
 
-    await prefs.setStringList("favoriteFolders", favoriteFolders);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          isFavorite
-              ? "Added '${widget.folderName}' to favorites ❤️"
-              : "Removed '${widget.folderName}' from favorites",
-        ),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    await prefs.setStringList('favoriteFolders', favoriteFolders);
   }
 
   @override
@@ -111,17 +89,16 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
 
-      // ✅ Gradient AppBar with Pin & Favorite Buttons
+      // ✅ Gradient AppBar with heart & pin buttons
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        toolbarHeight: 60,
+        toolbarHeight: height * 0.08,
         title: Text(
           widget.folderName,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 26),
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: width * 0.065),
         ),
         actions: [
-          // ❤️ Favorite button
           IconButton(
             icon: Icon(
               isFavorite ? Icons.favorite : Icons.favorite_border,
@@ -130,7 +107,6 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
             ),
             onPressed: _toggleFavorite,
           ),
-          // 📌 Pin button
           IconButton(
             icon: Icon(
               isPinned ? Icons.push_pin : Icons.push_pin_outlined,
@@ -140,24 +116,27 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
             onPressed: _togglePin,
           ),
         ],
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromARGB(255, 74, 186, 121),
-                Color.fromARGB(255, 1, 94, 104),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(30),
-              bottomRight: Radius.circular(30),
+        flexibleSpace: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          ),
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromARGB(255, 74, 186, 121),
+                  Color.fromARGB(255, 1, 94, 104),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
           ),
         ),
       ),
 
+      // Floating Action Button
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushReplacement(
@@ -175,79 +154,51 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
         shape: const CircularNotchedRectangle(),
         notchMargin: width * 0.02,
         child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: width * 0.04,
-            vertical: height * 0.01,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: width * 0.04, vertical: height * 0.01),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
                   IconButton(
-                    icon: Icon(
-                      Icons.home,
-                      size: width * 0.07,
-                      color: Colors.blue,
-                    ),
+                    icon: Icon(Icons.home, size: width * 0.07, color: Colors.blue),
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const HomeScreen()),
                       );
                     },
                   ),
                   SizedBox(width: width * 0.05),
                   IconButton(
-                    icon: Icon(
-                      Icons.bar_chart,
-                      size: width * 0.07,
-                      color: Colors.green,
-                    ),
+                    icon: Icon(Icons.bar_chart, size: width * 0.07, color: Colors.green),
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const StatsScreen(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const StatsScreen()),
                       );
                     },
                   ),
                 ],
               ),
-              SizedBox(width: width * 0.05),
               Row(
                 children: [
                   IconButton(
-                    icon: Icon(
-                      Icons.calendar_month,
-                      size: width * 0.07,
-                      color: Colors.red,
-                    ),
+                    icon: Icon(Icons.calendar_month, size: width * 0.07, color: Colors.red),
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const AddReminderScreen(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const AddReminderScreen()),
                       );
                     },
                   ),
                   SizedBox(width: width * 0.05),
                   IconButton(
-                    icon: Icon(
-                      Icons.more_vert,
-                      size: width * 0.07,
-                      color: Colors.black87,
-                    ),
+                    icon: Icon(Icons.more_vert, size: width * 0.07, color: Colors.black87),
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const MoreScreen(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const MoreScreen()),
                       );
                     },
                   ),
@@ -258,10 +209,11 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
         ),
       ),
 
+      // Body
       body: Center(
         child: Text(
-          "This is the '${widget.folderName}' folder screen",
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          "This is the '${widget.folderName}' folder",
+          style: TextStyle(fontSize: width * 0.05, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
       ),
