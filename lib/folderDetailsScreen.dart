@@ -17,13 +17,16 @@ class FolderDetailScreen extends StatefulWidget {
 
 class _FolderDetailScreenState extends State<FolderDetailScreen> {
   bool isPinned = false;
+  bool isFavorite = false; // ❤️ New flag
 
   @override
   void initState() {
     super.initState();
     _checkIfPinned();
+    _checkIfFavorite();
   }
 
+  // ✅ Check pinned state
   Future<void> _checkIfPinned() async {
     final prefs = await SharedPreferences.getInstance();
     List<String> pinnedFolders = prefs.getStringList("pinnedFolders") ?? [];
@@ -32,6 +35,16 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
     });
   }
 
+  // ✅ Check favorite state
+  Future<void> _checkIfFavorite() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> favoriteFolders = prefs.getStringList("favoriteFolders") ?? [];
+    setState(() {
+      isFavorite = favoriteFolders.contains(widget.folderName);
+    });
+  }
+
+  // ✅ Toggle pin
   Future<void> _togglePin() async {
     final prefs = await SharedPreferences.getInstance();
     List<String> pinnedFolders = prefs.getStringList("pinnedFolders") ?? [];
@@ -60,6 +73,35 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
     );
   }
 
+  // ✅ Toggle favorite
+  Future<void> _toggleFavorite() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> favoriteFolders = prefs.getStringList("favoriteFolders") ?? [];
+
+    setState(() {
+      if (isFavorite) {
+        favoriteFolders.remove(widget.folderName);
+        isFavorite = false;
+      } else {
+        favoriteFolders.add(widget.folderName);
+        isFavorite = true;
+      }
+    });
+
+    await prefs.setStringList("favoriteFolders", favoriteFolders);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          isFavorite
+              ? "Added '${widget.folderName}' to favorites ❤️"
+              : "Removed '${widget.folderName}' from favorites",
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -69,7 +111,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
 
-      // ✅ Gradient AppBar with Pin Button
+      // ✅ Gradient AppBar with Pin & Favorite Buttons
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -79,6 +121,16 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 26),
         ),
         actions: [
+          // ❤️ Favorite button
+          IconButton(
+            icon: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : Colors.black,
+              size: width * 0.07,
+            ),
+            onPressed: _toggleFavorite,
+          ),
+          // 📌 Pin button
           IconButton(
             icon: Icon(
               isPinned ? Icons.push_pin : Icons.push_pin_outlined,
