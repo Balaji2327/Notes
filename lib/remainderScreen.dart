@@ -58,14 +58,24 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
     }
   }
 
+  // ✅ Fixed date picker
   Future<void> _pickDate() async {
+    final now = DateTime.now();
+
+    // Ensure initialDate is valid
+    final initial =
+        (_selectedDate != null && _selectedDate!.isAfter(now))
+            ? _selectedDate!
+            : now;
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: initial,
+      firstDate: now,
       lastDate: DateTime(2100),
       helpText: "Select reminder date",
     );
+
     if (picked != null) {
       setState(() {
         _selectedDate = picked;
@@ -155,6 +165,8 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 16),
+
+            // 📅 Date picker
             GestureDetector(
               onTap: _pickDate,
               child: Container(
@@ -190,12 +202,15 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                 ),
               ),
             ),
+
             const SizedBox(height: 26),
             const Text(
               "Pick a time",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 12),
+
+            // ⏰ Quick times
             Wrap(
               spacing: 14,
               children:
@@ -225,6 +240,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                     );
                   }).toList(),
             ),
+
             const SizedBox(height: 14),
             Center(
               child: OutlinedButton.icon(
@@ -238,6 +254,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                 label: const Text("Custom time"),
               ),
             ),
+
             if (_selectedTime != null) ...[
               const SizedBox(height: 22),
               Center(
@@ -262,6 +279,8 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
           ],
         ),
       ),
+
+      // ➕ FAB + bottom nav
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushReplacement(
@@ -273,6 +292,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
         child: const Icon(Icons.add, color: Colors.white, size: 32),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: width * 0.02,
