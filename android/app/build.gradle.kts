@@ -11,12 +11,23 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        // Use Java 21 toolchain for compilation
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        // Keep Kotlin JVM bytecode target at 17 for compatibility with the
+        // Kotlin Gradle plugin (1.8.22). The project JDK/toolchain is still
+        // configured to use Java 21 for compilation/runtime.
+        jvmTarget = "17"
+    }
+
+    // Prefer Gradle Java toolchain to ensure the correct JDK is used for compilation
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        }
     }
 
     defaultConfig {
