@@ -15,11 +15,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<String> pinnedFolders = [];
+  List<String> groceryList = [];
 
   @override
   void initState() {
     super.initState();
     _loadPinnedFolders();
+    _loadGroceryList();
   }
 
   Future<void> _loadPinnedFolders() async {
@@ -27,6 +29,63 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       pinnedFolders = prefs.getStringList('pinnedFolders') ?? [];
     });
+  }
+
+  Future<void> _loadGroceryList() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      groceryList = prefs.getStringList('groceryList') ?? [];
+    });
+  }
+
+  Future<void> _addGroceryItem(String item) async {
+    if (item.trim().isEmpty) return;
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      groceryList.add(item.trim());
+    });
+    await prefs.setStringList('groceryList', groceryList);
+  }
+
+  Future<void> _removeGroceryItem(int index) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      groceryList.removeAt(index);
+    });
+    await prefs.setStringList('groceryList', groceryList);
+  }
+
+  void _showAddGroceryDialog() {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text("Add Grocery Item"),
+            content: TextField(
+              controller: controller,
+              decoration: const InputDecoration(hintText: "Enter item name"),
+              autofocus: true,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 135, 219, 101),
+                  foregroundColor: Colors.black, // optional for better contrast
+                ),
+                onPressed: () {
+                  _addGroceryItem(controller.text);
+                  Navigator.pop(context);
+                },
+                child: const Text("Add"),
+              ),
+            ],
+          ),
+    );
   }
 
   @override
@@ -44,7 +103,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const FolderScreen()),
-          ).then((_) => _loadPinnedFolders());
+          ).then((_) {
+            _loadPinnedFolders();
+            _loadGroceryList();
+          });
         },
         backgroundColor: Colors.black,
         child: Icon(Icons.add, color: Colors.white, size: width * 0.08),
@@ -138,12 +200,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
 
-      // ✅ Body
+      // ✅ Body Redesigned
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Gradient Header
+            // 🔹 Header Section
             ClipRRect(
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(width * 0.06),
@@ -206,12 +268,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
             SizedBox(height: height * 0.03),
 
-            // 🔹 Pinned Folders Section
             Padding(
               padding: EdgeInsets.symmetric(horizontal: width * 0.04),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // 🔹 Pinned Folders
                   Text(
                     "Pinned Folders",
                     style: TextStyle(
@@ -220,7 +282,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   SizedBox(height: height * 0.015),
-
                   pinnedFolders.isEmpty
                       ? Text(
                         "No pinned folders yet.",
@@ -229,38 +290,36 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Colors.grey,
                         ),
                       )
-                      : SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children:
-                              pinnedFolders.map((folder) {
-                                return Padding(
-                                  padding: EdgeInsets.only(right: width * 0.05),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) => FolderDetailScreen(
-                                                folderName: folder,
-                                              ),
+                      : SizedBox(
+                        height: width * 0.3,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: pinnedFolders.length,
+                          separatorBuilder:
+                              (_, __) => SizedBox(width: width * 0.04),
+                          itemBuilder: (context, index) {
+                            final folder = pinnedFolders[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => FolderDetailScreen(
+                                          folderName: folder,
                                         ),
-                                      );
-                                    },
-                                    child: _FolderItem(
-                                      icon: Icons.folder,
-                                      label: folder,
-                                    ),
                                   ),
                                 );
-                              }).toList(),
+                              },
+                              child: _PinnedFolderCard(label: folder),
+                            );
+                          },
                         ),
                       ),
 
                   SizedBox(height: height * 0.03),
 
-                  // Recent Notes
+                  // 🔹 Recent Notes
                   Text(
                     "Recent Notes",
                     style: TextStyle(
@@ -269,96 +328,90 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   SizedBox(height: height * 0.015),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Column(
                     children: [
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(width * 0.03),
-                          margin: EdgeInsets.only(right: width * 0.02),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFD4F5D4),
-                            borderRadius: BorderRadius.circular(width * 0.03),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Voice note",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: width * 0.04,
-                                ),
-                              ),
-                              SizedBox(height: height * 0.01),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.play_arrow,
-                                    size: width * 0.08,
-                                    color: Colors.black,
-                                  ),
-                                  SizedBox(width: width * 0.02),
-                                  Expanded(
-                                    child: Icon(
-                                      Icons.multitrack_audio,
-                                      size: width * 0.15,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                      _RecentNoteCard(
+                        title: "Voice Note",
+                        icon: Icons.mic,
+                        color: Colors.green.shade100,
                       ),
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(width * 0.03),
-                          margin: EdgeInsets.only(left: width * 0.02),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(width * 0.03),
-                          ),
-                          child: Text(
-                            "List of plans for this week\n"
-                            "Going to bangalore in this weekend and also explore the famous Temple at karnataka. "
-                            "On this week end there is a CSK vs RCB match at chinnaswamy stadium...",
-                            style: TextStyle(fontSize: width * 0.03),
-                            maxLines: 10,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
+                      SizedBox(height: height * 0.015),
+                      _RecentNoteCard(
+                        title: "Plans for the Week",
+                        content:
+                            "Going to Bangalore this weekend and exploring famous temples. CSK vs RCB match at Chinnaswamy stadium!",
+                        color: Colors.orange.shade100,
                       ),
                     ],
                   ),
-                  SizedBox(height: height * 0.02),
 
-                  // Grocery List
+                  SizedBox(height: height * 0.03),
+
+                  // 🔹 Grocery List Section (Dynamic)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Grocery List",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: width * 0.045,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: _showAddGroceryDialog,
+                        icon: const Icon(Icons.add, color: Colors.black87),
+                      ),
+                    ],
+                  ),
                   Container(
-                    padding: EdgeInsets.all(width * 0.03),
+                    width: double.infinity,
+                    padding: EdgeInsets.all(width * 0.04),
                     decoration: BoxDecoration(
                       color: Colors.grey.shade100,
                       borderRadius: BorderRadius.circular(width * 0.03),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          "Grocery Lists",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
                         ),
-                        SizedBox(height: 8),
-                        _BulletText(text: "Apple 1kg"),
-                        _BulletText(text: "Vegetables"),
-                        _BulletText(text: "Snacks"),
-                        _BulletText(text: "Milk"),
                       ],
                     ),
+                    child:
+                        groceryList.isEmpty
+                            ? const Text(
+                              "No grocery items yet.",
+                              style: TextStyle(color: Colors.grey),
+                            )
+                            : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children:
+                                  groceryList.asMap().entries.map((entry) {
+                                    final index = entry.key;
+                                    final item = entry.value;
+                                    return Dismissible(
+                                      key: Key(item),
+                                      direction: DismissDirection.endToStart,
+                                      onDismissed:
+                                          (_) => _removeGroceryItem(index),
+                                      background: Container(
+                                        color: Colors.red,
+                                        alignment: Alignment.centerRight,
+                                        padding: EdgeInsets.only(
+                                          right: width * 0.05,
+                                        ),
+                                        child: const Icon(
+                                          Icons.delete,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      child: _BulletText(text: item),
+                                    );
+                                  }).toList(),
+                            ),
                   ),
+                  SizedBox(height: height * 0.03),
                 ],
               ),
             ),
@@ -369,24 +422,115 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class _FolderItem extends StatelessWidget {
-  final IconData icon;
+// 🔹 Pinned Folder Card
+class _PinnedFolderCard extends StatelessWidget {
   final String label;
-  const _FolderItem({required this.icon, required this.label});
+  const _PinnedFolderCard({required this.label});
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return Column(
-      children: [
-        Icon(icon, size: width * 0.12, color: Colors.black),
-        SizedBox(height: width * 0.02),
-        Text(label, style: TextStyle(fontSize: width * 0.035)),
-      ],
+    return Container(
+      width: width * 0.25,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(width * 0.03),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.25),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: EdgeInsets.all(width * 0.03),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.folder, size: width * 0.12, color: Colors.black),
+          SizedBox(height: width * 0.02),
+          Text(
+            label,
+            style: TextStyle(fontSize: width * 0.035, color: Colors.black),
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
     );
   }
 }
 
+// 🔹 Recent Note Card
+class _RecentNoteCard extends StatelessWidget {
+  final String title;
+  final String? content;
+  final IconData? icon;
+  final Color color;
+  const _RecentNoteCard({
+    required this.title,
+    this.content,
+    this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(width * 0.04),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(width * 0.03),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.15),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child:
+          icon != null
+              ? Row(
+                children: [
+                  Icon(icon, size: width * 0.08),
+                  SizedBox(width: width * 0.03),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: width * 0.04,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              )
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: width * 0.04,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 6),
+                  Text(
+                    content ?? "",
+                    style: TextStyle(
+                      fontSize: width * 0.035,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+    );
+  }
+}
+
+// 🔹 Bullet Text
 class _BulletText extends StatelessWidget {
   final String text;
   const _BulletText({required this.text});
@@ -394,12 +538,17 @@ class _BulletText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return Row(
-      children: [
-        Icon(Icons.circle, size: width * 0.02, color: Colors.black),
-        SizedBox(width: width * 0.02),
-        Text(text, style: TextStyle(fontSize: width * 0.035)),
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: width * 0.01),
+      child: Row(
+        children: [
+          Icon(Icons.circle, size: width * 0.025, color: Colors.black87),
+          SizedBox(width: width * 0.03),
+          Expanded(
+            child: Text(text, style: TextStyle(fontSize: width * 0.035)),
+          ),
+        ],
+      ),
     );
   }
 }
