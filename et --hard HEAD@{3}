@@ -1,0 +1,44 @@
+[33mb25f054[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtwo-commits-before[m[33m, [m[1;32mbackup-before-restore[m[33m)[m HEAD@{0}: reset: moving to backup-before-restore
+[33m79c7f9b[m[33m ([m[1;31morigin/two-commits-before[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{1}: checkout: moving from main to two-commits-before
+[33m79c7f9b[m[33m ([m[1;31morigin/two-commits-before[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{2}: reset: moving to 79c7f9b
+[33mb25f054[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtwo-commits-before[m[33m, [m[1;32mbackup-before-restore[m[33m)[m HEAD@{3}: reset: moving to HEAD~2
+[33mf622d5e[m HEAD@{4}: reset: moving to HEAD~2
+[33m79c7f9b[m[33m ([m[1;31morigin/two-commits-before[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{5}: reset: moving to HEAD~2
+[33mae3d2ec[m HEAD@{6}: commit: Redesign HomeScreen layout with updated header, pinned folders, and recent notes sections
+[33mb8cbf35[m HEAD@{7}: commit: StatsScreen updated
+[33m79c7f9b[m[33m ([m[1;31morigin/two-commits-before[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{8}: commit: FavoriteScreen updated
+[33mc6de057[m HEAD@{9}: commit: Favorite button is added
+[33mf622d5e[m HEAD@{10}: commit: Calender issue cleared
+[33mc5a0958[m HEAD@{11}: commit: Save popup added
+[33mb25f054[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtwo-commits-before[m[33m, [m[1;32mbackup-before-restore[m[33m)[m HEAD@{12}: commit: Color added
+[33m59ab5a3[m HEAD@{13}: commit: MoreScreen updated
+[33m7aae2b1[m HEAD@{14}: commit: Pin feature is added
+[33mc23dc76[m HEAD@{15}: commit: FolderScreen updated
+[33m8b74d8c[m HEAD@{16}: commit: AddremainderScreen updated
+[33m68d645c[m HEAD@{17}: commit: UI updated
+[33mb771d59[m HEAD@{18}: commit: HomeScreen and OnboardingScreen updated
+[33m038838e[m HEAD@{19}: commit: FolderDetailsScreen created
+[33m6ea20e4[m HEAD@{20}: commit: Appname and overflow fixed
+[33md7d23fc[m HEAD@{21}: commit: Overflows are solved
+[33mbae9d68[m HEAD@{22}: commit: PolicyScreen created
+[33mb488ed8[m HEAD@{23}: commit: HelpScreen and StroyScreen created
+[33m6d643bb[m HEAD@{24}: commit: Error are fixed
+[33mc6ca538[m HEAD@{25}: commit: SettingsScreen theme updated
+[33m81ace3b[m HEAD@{26}: commit: SettingsScreen updated
+[33m0544180[m HEAD@{27}: commit: SettingsScreen created
+[33m8571daf[m HEAD@{28}: commit: Popup created
+[33m11301b4[m HEAD@{29}: commit: Color changed
+[33mbc2262e[m HEAD@{30}: commit: Heading changed
+[33mc362f9f[m HEAD@{31}: commit: StatsScreen created
+[33ma7da680[m HEAD@{32}: commit: FolderScreen created
+[33m98fe419[m HEAD@{33}: commit: Changes updated
+[33m4a123d1[m HEAD@{34}: commit: MoreScreen created
+[33m12a76f8[m HEAD@{35}: commit: App_Icon updated
+[33mc655ab9[m HEAD@{36}: commit: UI updated
+[33m02d657d[m HEAD@{37}: commit: RemainderScreen created
+[33m04089b1[m HEAD@{38}: commit: HomeScreenIcon updated
+[33maa6bf3a[m HEAD@{39}: commit: Home screen created
+[33ma66af50[m HEAD@{40}: commit: forgetPassword and otpScreen updated
+[33m47685d8[m HEAD@{41}: commit: Login and SignUp updated
+[33m70728ed[m HEAD@{42}: Branch: renamed refs/heads/master to refs/heads/main
+[33m70728ed[m HEAD@{44}: commit (initial): Front page

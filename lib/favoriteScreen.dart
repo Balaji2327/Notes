@@ -1,83 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'folderDetailsScreen.dart';
 import 'homeScreen.dart';
 import 'remainderScreen.dart';
-import 'moreScreen.dart';
-import 'statsScreen.dart';
 import 'folderScreen.dart';
+import 'statsScreen.dart';
+import 'moreScreen.dart';
 
-class FolderDetailScreen extends StatefulWidget {
-  final String folderName;
-
-  const FolderDetailScreen({super.key, required this.folderName});
+class FavoriteScreen extends StatefulWidget {
+  const FavoriteScreen({super.key});
 
   @override
-  State<FolderDetailScreen> createState() => _FolderDetailScreenState();
+  State<FavoriteScreen> createState() => _FavoriteScreenState();
 }
 
-class _FolderDetailScreenState extends State<FolderDetailScreen> {
-  bool isPinned = false;
-  bool isFavorite = false;
+class _FavoriteScreenState extends State<FavoriteScreen> {
+  List<String> favoriteFolders = [];
 
   @override
   void initState() {
     super.initState();
-    _loadPinnedStatus();
-    _loadFavoriteStatus();
+    _loadFavorites();
   }
 
-  // Load pinned status
-  Future<void> _loadPinnedStatus() async {
+  Future<void> _loadFavorites() async {
     final prefs = await SharedPreferences.getInstance();
-    final pinnedFolders = prefs.getStringList('pinnedFolders') ?? [];
     setState(() {
-      isPinned = pinnedFolders.contains(widget.folderName);
+      favoriteFolders = prefs.getStringList('favoriteFolders') ?? [];
     });
-  }
-
-  // Load favorite status
-  Future<void> _loadFavoriteStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    final favoriteFolders = prefs.getStringList('favoriteFolders') ?? [];
-    setState(() {
-      isFavorite = favoriteFolders.contains(widget.folderName);
-    });
-  }
-
-  // Toggle pin
-  Future<void> _togglePin() async {
-    final prefs = await SharedPreferences.getInstance();
-    final pinnedFolders = prefs.getStringList('pinnedFolders') ?? [];
-
-    setState(() {
-      if (isPinned) {
-        pinnedFolders.remove(widget.folderName);
-        isPinned = false;
-      } else {
-        pinnedFolders.add(widget.folderName);
-        isPinned = true;
-      }
-    });
-
-    await prefs.setStringList('pinnedFolders', pinnedFolders);
-  }
-
-  // Toggle favorite
-  Future<void> _toggleFavorite() async {
-    final prefs = await SharedPreferences.getInstance();
-    final favoriteFolders = prefs.getStringList('favoriteFolders') ?? [];
-
-    setState(() {
-      if (isFavorite) {
-        favoriteFolders.remove(widget.folderName);
-        isFavorite = false;
-      } else {
-        favoriteFolders.add(widget.folderName);
-        isFavorite = true;
-      }
-    });
-
-    await prefs.setStringList('favoriteFolders', favoriteFolders);
   }
 
   @override
@@ -89,36 +39,18 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
 
-      // ✅ Gradient AppBar with heart & pin buttons
+      // ✅ Gradient AppBar
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         toolbarHeight: height * 0.08,
         title: Text(
-          widget.folderName,
+          "Favorites",
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: width * 0.065,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: isFavorite ? Colors.red : Colors.black,
-              size: width * 0.07,
-            ),
-            onPressed: _toggleFavorite,
-          ),
-          IconButton(
-            icon: Icon(
-              isPinned ? Icons.push_pin : Icons.push_pin_outlined,
-              color: isPinned ? Colors.orange : Colors.black,
-              size: width * 0.07,
-            ),
-            onPressed: _togglePin,
-          ),
-        ],
         flexibleSpace: ClipRRect(
           borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(30),
@@ -152,7 +84,7 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      // ✅ Bottom Navigation Bar
+      // Bottom Navigation Bar
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         notchMargin: width * 0.02,
@@ -239,14 +171,55 @@ class _FolderDetailScreenState extends State<FolderDetailScreen> {
         ),
       ),
 
-      // Body
-      body: Center(
-        child: Text(
-          "This is the '${widget.folderName}' folder",
-          style: TextStyle(fontSize: width * 0.05, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
-        ),
-      ),
+      // Body: list of favorite folders
+      body:
+          favoriteFolders.isEmpty
+              ? Center(
+                child: Text(
+                  "No favorite folders yet.",
+                  style: TextStyle(
+                    fontSize: width * 0.05,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              )
+              : ListView.builder(
+                padding: EdgeInsets.symmetric(vertical: height * 0.02),
+                itemCount: favoriteFolders.length,
+                itemBuilder: (context, index) {
+                  final folderName = favoriteFolders[index];
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: width * 0.05,
+                      vertical: height * 0.01,
+                    ),
+                    child: ListTile(
+                      tileColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      title: Text(
+                        folderName,
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) =>
+                                    FolderDetailScreen(folderName: folderName),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
     );
   }
 }

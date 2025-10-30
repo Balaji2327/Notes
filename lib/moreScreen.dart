@@ -6,6 +6,7 @@ import 'statsScreen.dart';
 import 'settingsScreen.dart';
 import 'helpScreen.dart';
 import 'policyScreen.dart';
+import 'favoriteScreen.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -224,7 +225,14 @@ class MoreScreen extends StatelessWidget {
                   icon: Icons.favorite,
                   text: "Favorites",
                   color: Colors.pinkAccent.shade100, // ❤️ Pink
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FavoriteScreen(),
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: height * 0.012),
                 _buildOption(

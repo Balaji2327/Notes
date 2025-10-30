@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'onboardingScreen.dart';
-import 'folderScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // ✅ required before SharedPreferences

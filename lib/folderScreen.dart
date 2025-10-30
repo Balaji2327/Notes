@@ -139,7 +139,6 @@ class _FolderScreenState extends State<FolderScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Recording started...")),
                       );
-                      // After popup closes, show original recorder
                       setState(() => showRecorder = true);
                     },
                     child: Container(
@@ -163,7 +162,6 @@ class _FolderScreenState extends State<FolderScreen> {
           ),
     );
 
-    // If user dismissed popup by tapping outside
     setState(() => showRecorder = true);
   }
 
@@ -292,7 +290,7 @@ class _FolderScreenState extends State<FolderScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.black,
         onPressed: _createFolder,
-        child: const Icon(Icons.add, color: Colors.white, size: 32),
+        child: Icon(Icons.add, color: Colors.white, size: width * 0.08),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: SafeArea(
@@ -313,8 +311,8 @@ class _FolderScreenState extends State<FolderScreen> {
                     mainAxisSpacing: 12,
                   ),
                   itemBuilder: (context, index) {
-                    final buttonSize = width * 0.18; // responsive size
-                    final iconSize = width * 0.09; // responsive icon size
+                    final buttonSize = width * 0.18;
+                    final iconSize = width * 0.09;
 
                     if (index == 0) {
                       return GestureDetector(
@@ -361,7 +359,6 @@ class _FolderScreenState extends State<FolderScreen> {
                     }
                   },
                 ),
-
                 const SizedBox(height: 20),
                 // Voice note card
                 Container(
@@ -439,7 +436,54 @@ class _FolderScreenState extends State<FolderScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          const Icon(Icons.save, color: Colors.grey),
+                          IconButton(
+                            icon: const Icon(Icons.save, color: Colors.grey),
+                            onPressed: () {
+                              // Show confirmation dialog
+                              showDialog(
+                                context: context,
+                                builder:
+                                    (ctx) => AlertDialog(
+                                      title: const Text("Save Voice Note"),
+                                      content: const Text(
+                                        "Are you sure you want to save this voice note?",
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(ctx).pop();
+                                          },
+                                          child: const Text("Cancel"),
+                                        ),
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                  255,
+                                                  135,
+                                                  219,
+                                                  101,
+                                                ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(ctx).pop();
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  "Voice note saved successfully",
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: const Text("Save"),
+                                        ),
+                                      ],
+                                    ),
+                              );
+                            },
+                          ),
                           const SizedBox(width: 16),
                           IconButton(
                             icon: const Icon(Icons.mic, color: Colors.green),
@@ -447,7 +491,6 @@ class _FolderScreenState extends State<FolderScreen> {
                           ),
                         ],
                       ),
-                      // Show original recorder if state is true
                       if (showRecorder)
                         Padding(
                           padding: const EdgeInsets.only(top: 16.0),
