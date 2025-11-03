@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "83112024453",
+    "project_id": "mis-notas-e051a",
+    "storage_bucket": "mis-notas-e051a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:83112024453:android:aaf8dad9ba02f672200cec",
+        "android_client_info": {
+          "package_name": "com.example.notes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjKE8VnGPRrSuhz7UfYcxejSZlvxjuFRk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
