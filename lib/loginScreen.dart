@@ -1,12 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'auth_service.dart';
 import 'signUpScreen.dart';
 import 'forgetPassword.dart';
 import 'otpVerification.dart';
 import 'homeScreen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _loading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signIn() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter email and password')),
+      );
+      return;
+    }
+
+    setState(() => _loading = true);
+    try {
+      final userCred = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Persist a simple logged-in flag and email
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('is_logged_in', true);
+      await prefs.setString('user_email', userCred.user?.email ?? email);
+
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? 'Authentication failed')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Login error: $e')));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +117,12 @@ class LoginScreen extends StatelessWidget {
 
                     SizedBox(height: height * 0.04),
 
-                    // Username
+                    // Email
                     TextField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        hintText: 'Your username or email',
+                        hintText: 'Your email',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16.0),
                         ),
@@ -71,6 +132,7 @@ class LoginScreen extends StatelessWidget {
 
                     // Password
                     TextField(
+                      controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'Your password',
@@ -93,22 +155,20 @@ class LoginScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(16),
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Log In',
-                          style: TextStyle(
-                            fontSize: width * 0.045,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
+                        onPressed: _loading ? null : _signIn,
+                        child:
+                            _loading
+                                ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                                : Text(
+                                  'Log In',
+                                  style: TextStyle(
+                                    fontSize: width * 0.045,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
                       ),
                     ),
 
@@ -159,6 +219,33 @@ class LoginScreen extends StatelessWidget {
                       imagePath: 'assets/images/google.png',
                       text: 'Continue with Google',
                       fontSize: width * 0.04,
+                      onPressed: () async {
+                        // Google sign-in flow
+                        try {
+                          final cred = await AuthService.signInWithGoogle();
+                          if (cred != null) {
+                            if (!mounted) return;
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HomeScreen(),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Google sign-in cancelled'),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Google sign-in failed: $e'),
+                            ),
+                          );
+                        }
+                      },
                     ),
                     SizedBox(height: height * 0.02),
                     SocialLoginButton(
@@ -226,12 +313,14 @@ class SocialLoginButton extends StatelessWidget {
   final String imagePath;
   final String text;
   final double fontSize;
+  final VoidCallback? onPressed;
 
   const SocialLoginButton({
     Key? key,
     required this.imagePath,
     required this.text,
     this.fontSize = 16,
+    this.onPressed,
   }) : super(key: key);
 
   @override
@@ -240,7 +329,7 @@ class SocialLoginButton extends StatelessWidget {
       width: double.infinity,
       height: 50,
       child: OutlinedButton(
-        onPressed: () {},
+        onPressed: onPressed ?? () {},
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),

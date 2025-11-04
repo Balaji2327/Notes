@@ -7,6 +7,8 @@ import 'settingsScreen.dart';
 import 'helpScreen.dart';
 import 'policyScreen.dart';
 import 'favoriteScreen.dart';
+import 'auth_service.dart';
+import 'loginScreen.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -368,12 +370,32 @@ class MoreScreen extends StatelessWidget {
               child: const Text("Cancel"),
             ),
             ElevatedButton(
-              onPressed: () {
-                Navigator.of(ctx).pop(); // close popup
+              onPressed: () async {
+                Navigator.of(ctx).pop(); // close popup first
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Logged out successfully")),
-                );
+                try {
+                  await AuthService.signOut();
+
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Logged out successfully")),
+                    );
+
+                    // Navigate back to the login screen, replacing current stack
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Logout failed: $e')),
+                    );
+                  }
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 135, 219, 101),
