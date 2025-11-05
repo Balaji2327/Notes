@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'onboardingScreen.dart';
+import 'homeScreen.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // ✅ required before SharedPreferences
-  await Firebase.initializeApp(); // ✅ Initialize Firebase
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MainApp());
 }
 
@@ -16,8 +18,6 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'My App',
-
-      // 🌞 Light Theme only
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
@@ -36,7 +36,35 @@ class MainApp extends StatelessWidget {
         ),
       ),
 
-      home: const OnboardingScreen(),
+      // Root will listen to Firebase auth state and decide which screen to show.
+      home: const RootScreen(),
+    );
+  }
+}
+
+class RootScreen extends StatelessWidget {
+  const RootScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final user = snapshot.data;
+        if (user != null) {
+          // User is signed in
+          return const HomeScreen();
+        }
+
+        // Not signed in -> show onboarding (which leads to login/signup)
+        return const OnboardingScreen();
+      },
     );
   }
 }
