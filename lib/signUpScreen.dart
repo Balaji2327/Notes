@@ -234,7 +234,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 fontSize: width * 0.04,
               ),
 
-              const Spacer(),
+              const SizedBox(height: 20),
 
               // 🔁 Navigate to Login Screen
               Center(
