@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'homeScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'remainderScreen.dart';
 import 'folderScreen.dart';
 import 'statsScreen.dart';
@@ -232,6 +233,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final bioController = TextEditingController();
     final ageController = TextEditingController();
 
+    // Pre-fill name with current user's displayName or derive from email
+    final currentUser = FirebaseAuth.instance.currentUser;
+    nameController.text =
+        currentUser?.displayName != null &&
+                currentUser!.displayName!.trim().isNotEmpty
+            ? currentUser.displayName!
+            : _extractNameFromEmail(currentUser?.email ?? '');
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -332,10 +341,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       const SizedBox(width: 10),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           String name = nameController.text.trim();
                           String bio = bioController.text.trim();
                           String age = ageController.text.trim();
+
+                          // Update Firebase user displayName if provided
+                          try {
+                            if (name.isNotEmpty) {
+                              await FirebaseAuth.instance.currentUser
+                                  ?.updateDisplayName(name);
+                            }
+                          } catch (e) {
+                            // ignore errors but show a snack
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Failed to update profile: $e'),
+                              ),
+                            );
+                          }
 
                           Navigator.pop(ctx);
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -464,6 +488,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ).showSnackBar(SnackBar(content: Text("$lang Selected")));
       },
     );
+  }
+
+  String _extractNameFromEmail(String email) {
+    if (email.isEmpty) return '';
+    final local = email.split('@').first;
+    final cleaned = local.replaceAll(RegExp(r'[._]'), ' ');
+    if (cleaned.isEmpty) return '';
+    return '${cleaned[0].toUpperCase()}${cleaned.substring(1)}';
   }
 
   /// Reusable Option

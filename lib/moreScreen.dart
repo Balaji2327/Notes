@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
 import 'homeScreen.dart';
 import 'remainderScreen.dart';
 import 'folderScreen.dart';
@@ -10,8 +12,58 @@ import 'favoriteScreen.dart';
 import 'auth_service.dart';
 import 'loginScreen.dart';
 
-class MoreScreen extends StatelessWidget {
+class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
+
+  @override
+  State<MoreScreen> createState() => _MoreScreenState();
+}
+
+class _MoreScreenState extends State<MoreScreen> {
+  String displayName = '';
+  String email = '';
+  StreamSubscription<User?>? _userSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+    _userSub = FirebaseAuth.instance.userChanges().listen((user) {
+      if (!mounted) return;
+      setState(() {
+        email = user?.email ?? '';
+        displayName =
+            (user?.displayName != null && user!.displayName!.trim().isNotEmpty)
+                ? user.displayName!
+                : _extractNameFromEmail(user?.email ?? '');
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _userSub?.cancel();
+    super.dispose();
+  }
+
+  void _loadUser() {
+    final user = FirebaseAuth.instance.currentUser;
+    setState(() {
+      email = user?.email ?? '';
+      displayName =
+          (user?.displayName != null && user!.displayName!.trim().isNotEmpty)
+              ? user.displayName!
+              : _extractNameFromEmail(user?.email ?? '');
+    });
+  }
+
+  String _extractNameFromEmail(String email) {
+    if (email.isEmpty) return '';
+    final local = email.split('@').first;
+    final cleaned = local.replaceAll(RegExp(r'[._]'), ' ');
+    if (cleaned.isEmpty) return '';
+    return '${cleaned[0].toUpperCase()}${cleaned.substring(1)}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +235,7 @@ class MoreScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Siddharth P",
+                      displayName.isNotEmpty ? displayName : 'User',
                       style: TextStyle(
                         fontSize: width * 0.06,
                         fontWeight: FontWeight.w600,
@@ -191,7 +243,7 @@ class MoreScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "siddu2017@gmail.com",
+                      email.isNotEmpty ? email : '',
                       style: TextStyle(
                         fontSize: width * 0.035,
                         color: Colors.black54,

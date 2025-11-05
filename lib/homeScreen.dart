@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'moreScreen.dart';
 import 'remainderScreen.dart';
 import 'folderScreen.dart';
@@ -16,12 +18,54 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<String> pinnedFolders = [];
   List<String> groceryList = [];
+  String displayName = '';
+  String email = '';
+  StreamSubscription<User?>? _userSub;
 
   @override
   void initState() {
     super.initState();
     _loadPinnedFolders();
     _loadGroceryList();
+    _loadUser();
+    _userSub = FirebaseAuth.instance.userChanges().listen(_updateFromUser);
+  }
+
+  @override
+  void dispose() {
+    _userSub?.cancel();
+    super.dispose();
+  }
+
+  void _updateFromUser(User? user) {
+    if (!mounted) return;
+    setState(() {
+      email = user?.email ?? '';
+      displayName =
+          (user?.displayName != null && user!.displayName!.trim().isNotEmpty)
+              ? user.displayName!
+              : _extractNameFromEmail(user?.email ?? '');
+    });
+  }
+
+  void _loadUser() {
+    final user = FirebaseAuth.instance.currentUser;
+    setState(() {
+      email = user?.email ?? '';
+      displayName =
+          (user?.displayName != null && user!.displayName!.trim().isNotEmpty)
+              ? user.displayName!
+              : _extractNameFromEmail(user?.email ?? '');
+    });
+  }
+
+  String _extractNameFromEmail(String email) {
+    if (email.isEmpty) return '';
+    final local = email.split('@').first;
+    // Replace dots/underscores with spaces and capitalize first letter
+    final cleaned = local.replaceAll(RegExp(r'[._]'), ' ');
+    if (cleaned.isEmpty) return '';
+    return '${cleaned[0].toUpperCase()}${cleaned.substring(1)}';
   }
 
   Future<void> _loadPinnedFolders() async {
@@ -232,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     SizedBox(height: MediaQuery.of(context).padding.top),
                     Text(
-                      "Hello, Siddharth P",
+                      "Hello, ${displayName.isNotEmpty ? displayName : 'User'}",
                       style: TextStyle(
                         fontSize: width * 0.05,
                         fontWeight: FontWeight.w600,
@@ -241,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(height: height * 0.005),
                     Text(
-                      "siddu2017@gmail.com",
+                      email.isNotEmpty ? email : '',
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: width * 0.035,
