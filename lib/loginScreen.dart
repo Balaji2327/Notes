@@ -6,6 +6,7 @@ import 'signUpScreen.dart';
 import 'forgetPassword.dart';
 import 'otpVerification.dart';
 import 'homeScreen.dart';
+import 'auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -237,12 +238,32 @@ class _LoginScreenState extends State<LoginScreen> {
                     imagePath: 'assets/images/google.png',
                     text: 'Continue with Google',
                     fontSize: width * 0.04,
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Google Sign-In not implemented'),
-                        ),
-                      );
+                    onPressed: () async {
+                      setState(() => _loading = true);
+                      try {
+                        final cred = await AuthService.signInWithGoogle();
+                        if (cred != null) {
+                          if (!mounted) return;
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Google sign-in cancelled'),
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Google sign-in failed: $e')),
+                        );
+                      } finally {
+                        if (mounted) setState(() => _loading = false);
+                      }
                     },
                   ),
                   SizedBox(height: height * 0.015),
