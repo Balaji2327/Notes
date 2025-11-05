@@ -7,7 +7,11 @@ class AuthService {
   /// or null if the user cancelled the sign-in flow.
   static Future<UserCredential?> signInWithGoogle() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
-    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    // Try silent sign-in first to avoid account picker when possible
+    GoogleSignInAccount? googleUser = await googleSignIn.signInSilently();
+    if (googleUser == null) {
+      googleUser = await googleSignIn.signIn();
+    }
     if (googleUser == null) return null; // user cancelled
 
     final GoogleSignInAuthentication googleAuth =
@@ -28,6 +32,41 @@ class AuthService {
     await prefs.setString('user_email', userCred.user?.email ?? '');
 
     return userCred;
+  }
+
+  /// Sign in using GitHub via Firebase OAuthProvider.
+  /// Requires GitHub provider to be configured in Firebase Console (client id/secret).
+  static Future<UserCredential?> signInWithGitHub() async {
+    final provider = OAuthProvider('github.com');
+    provider.addScope('read:user');
+
+    final userCred = await FirebaseAuth.instance.signInWithProvider(provider);
+
+    // Persist a simple logged-in flag and email
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('is_logged_in', true);
+    await prefs.setString('user_email', userCred.user?.email ?? '');
+
+    return userCred;
+  }
+
+  /// Link GitHub provider to the currently signed-in user.
+  /// This opens the OAuth flow and attaches the GitHub credential to the existing account.
+  static Future<UserCredential?> linkGitHubToCurrentUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('No signed-in user to link with.');
+
+    final provider = OAuthProvider('github.com');
+    provider.addScope('read:user');
+
+    final result = await user.linkWithProvider(provider);
+
+    // Persist a simple logged-in flag and email
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('is_logged_in', true);
+    await prefs.setString('user_email', result.user?.email ?? '');
+
+    return result;
   }
 
   /// Sign out from Firebase and Google and clear persisted flags.

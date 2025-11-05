@@ -226,6 +226,107 @@ class _SignupScreenState extends State<SignupScreen> {
                 imagePath: 'assets/images/github.png',
                 text: 'GitHub',
                 fontSize: width * 0.04,
+                onPressed: () async {
+                  setState(() => _loading = true);
+                  try {
+                    final cred = await AuthService.signInWithGitHub();
+                    if (cred != null) {
+                      if (!mounted) return;
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('GitHub sign-in cancelled'),
+                        ),
+                      );
+                    }
+                  } on FirebaseAuthException catch (e) {
+                    if (e.code == 'account-exists-with-different-credential' ||
+                        e.code == 'credential-already-in-use') {
+                      final email = e.email;
+                      showDialog(
+                        context: context,
+                        builder:
+                            (ctx) => AlertDialog(
+                              title: const Text('Account exists'),
+                              content: Text(
+                                'An account already exists with the same email (${email ?? 'unknown'}).\n'
+                                'Sign in with Google to link your GitHub account.',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(ctx).pop(),
+                                  child: const Text('Cancel'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    Navigator.of(ctx).pop();
+                                    try {
+                                      final g =
+                                          await AuthService.signInWithGoogle();
+                                      if (g != null) {
+                                        try {
+                                          final linked =
+                                              await AuthService.linkGitHubToCurrentUser();
+                                          if (linked != null && mounted) {
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (context) =>
+                                                        const HomeScreen(),
+                                              ),
+                                            );
+                                          }
+                                        } catch (linkErr) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Failed to link GitHub: $linkErr',
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    } catch (signErr) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Sign-in with provider failed: $signErr',
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: const Text('Sign in & Link'),
+                                ),
+                              ],
+                            ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('GitHub sign-in failed: ${e.message}'),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('GitHub sign-in failed: $e')),
+                    );
+                  } finally {
+                    if (mounted) setState(() => _loading = false);
+                  }
+                },
               ),
               SizedBox(height: height * 0.015),
               SocialLoginButton(
